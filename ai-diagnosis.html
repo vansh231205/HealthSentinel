@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disease Classification - HealthSentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --accent: #00bcd4;
+            --dark: #333333;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f1f8e9 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 800px;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .symptom-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .symptom-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+        
+        .btn-voice {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-left: 10px;
+        }
+        
+        .btn-voice:hover {
+            background: #0097a7;
+            color: white;
+        }
+        
+        .how-it-works {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .diagnosis-result {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .risk-low {
+            border-left: 5px solid var(--success);
+        }
+        
+        .risk-medium {
+            border-left: 5px solid var(--warning);
+        }
+        
+        .risk-high {
+            border-left: 5px solid var(--danger);
+        }
+        
+        .nav-bar {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-btn:hover {
+            color: #e8f5e8;
+        }
+        
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+            margin-left: auto;
+        }
+        
+        .lang-dropdown {
+            background: white;
+            color: var(--dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .lang-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 120px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .lang-options.show {
+            display: block;
+        }
+        
+        .lang-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .lang-option:hover {
+            background: #f5f5f5;
+        }
+        
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+        
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .main-card {
+                padding: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .btn-voice {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="HealthSentinel.html" class="back-btn" data-text="nav_back">← Back to Home</a>
+            <span data-text="nav_diagnosis">AI Diagnosis</span>
+            <div class="lang-selector">
+                <button class="lang-dropdown" id="langSelect">
+                    <span id="selectedLang">English</span> ▼
+                </button>
+                <div class="lang-options" id="langOptions">
+                    <div class="lang-option" data-lang="en-IN">English</div>
+                    <div class="lang-option" data-lang="hi-IN">हिंदी</div>
+                    <div class="lang-option" data-lang="ta-IN">தமிழ்</div>
+                    <div class="lang-option" data-lang="as-IN">অসমীয়া</div>
+                    <div class="lang-option" data-lang="bn-IN">বাংলা</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-card">
+            <div class="header-section">
+                <h1 class="page-title" data-text="ai_title">🤖 AI Disease Classification</h1>
+                <p class="lead" data-text="ai_description">Describe your symptoms in detail. The AI will analyze them and provide a preliminary assessment.</p>
+            </div>
+            
+            <!-- Symptom Input Section -->
+            <div class="mb-4">
+                <label for="symptomInput" class="form-label fs-5 fw-bold" data-text="ai_enter_symptoms">Enter Your Symptoms</label>
+                <textarea 
+                    id="symptomInput" 
+                    class="symptom-input" 
+                    placeholder="Enter your symptoms here... (e.g., fever, headache, nausea, diarrhea)"
+                    data-text="ai_placeholder"
+                ></textarea>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="text-center mb-4">
+                <button class="btn btn-primary btn-lg" onclick="analyzeSymptoms()" data-text="ai_analyze_btn">
+                    🤖 Get AI Diagnosis
+                </button>
+                <button class="btn btn-voice" onclick="startVoiceInput()" data-text="ai_voice_btn">
+                    🎤 Voice Input
+                </button>
+            </div>
+            
+            <!-- How It Works Section -->
+            <div class="how-it-works">
+                <h3 class="mb-3" data-text="ai_how_works">How It Works</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-item">
+                            <div class="feature-icon">🧠</div>
+                            <div>
+                                <strong data-text="ai_analysis">AI Analysis:</strong><br>
+                                <small data-text="ai_analysis_desc">Uses machine learning to analyze symptom patterns</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-item">
+                            <div class="feature-icon">📊</div>
+                            <div>
+                                <strong data-text="ai_database">Disease Database:</strong><br>
+                                <small data-text="ai_database_desc">Matches against common water-borne diseases in Northeast India</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-item">
+                            <div class="feature-icon">⚠️</div>
+                            <div>
+                                <strong data-text="ai_risk">Risk Assessment:</strong><br>
+                                <small data-text="ai_risk_desc">Provides risk level and recommendations</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-item">
+                            <div class="feature-icon">👨‍⚕️</div>
+                            <div>
+                                <strong data-text="ai_disclaimer_title">Medical Disclaimer:</strong><br>
+                                <small data-text="ai_disclaimer_desc">Always consult healthcare professionals for accurate diagnosis</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="diagnosisResult" class="diagnosis-result"></div>
+    </div>
+    
+    <script>
+// Language support system
+const texts = {
+  "en-IN": {
+    nav_back: "← Back to Home",
+    nav_diagnosis: "AI Diagnosis",
+    ai_title: "🤖 AI Disease Classification",
+    ai_enter_symptoms: "Enter Your Symptoms",
+    ai_description: "Describe your symptoms in detail. The AI will analyze them and provide a preliminary assessment.",
+    ai_placeholder: "Enter your symptoms here... (e.g., fever, headache, nausea, diarrhea)",
+    ai_analyze_btn: "🤖 Get AI Diagnosis",
+    ai_voice_btn: "🎤 Voice Input",
+    ai_how_works: "How It Works",
+    ai_analysis: "AI Analysis:",
+    ai_analysis_desc: "Uses machine learning to analyze symptom patterns",
+    ai_database: "Disease Database:",
+    ai_database_desc: "Matches against common water-borne diseases in Northeast India",
+    ai_risk: "Risk Assessment:",
+    ai_risk_desc: "Provides risk level and recommendations",
+    ai_disclaimer_title: "Medical Disclaimer:",
+    ai_disclaimer_desc: "Always consult healthcare professionals for accurate diagnosis"
+  },
+  "hi-IN": {
+    nav_back: "← होम पर वापस",
+    nav_diagnosis: "एआई निदान",
+    ai_title: "🤖 एआई रोग वर्गीकरण",
+    ai_enter_symptoms: "अपने लक्षण दर्ज करें",
+    ai_description: "अपने लक्षणों का विस्तार से वर्णन करें। एआई उनका विश्लेषण करेगा और प्रारंभिक मूल्यांकन प्रदान करेगा।",
+    ai_placeholder: "यहाँ अपने लक्षण दर्ज करें... (जैसे, बुखार, सिरदर्द, मतली, दस्त)",
+    ai_analyze_btn: "🤖 एआई निदान प्राप्त करें",
+    ai_voice_btn: "🎤 आवाज इनपुट",
+    ai_how_works: "यह कैसे काम करता है",
+    ai_analysis: "एआई विश्लेषण:",
+    ai_analysis_desc: "लक्षण पैटर्न का विश्लेषण करने के लिए मशीन लर्निंग का उपयोग करता है",
+    ai_database: "रोग डेटाबेस:",
+    ai_database_desc: "पूर्वोत्तर भारत में सामान्य जलजनित रोगों से मेल खाता है",
+    ai_risk: "जोखिम मूल्यांकन:",
+    ai_risk_desc: "जोखिम स्तर और सिफारिशें प्रदान करता है",
+    ai_disclaimer_title: "चिकित्सा अस्वीकरण:",
+    ai_disclaimer_desc: "सटीक निदान के लिए हमेशा स्वास्थ्य पेशेवरों से सलाह लें"
+  },
+  "ta-IN": {
+    nav_back: "← முகப்புக்கு திரும்பு",
+    nav_diagnosis: "ஏ.ஐ நோயறிதல்",
+    ai_title: "🤖 ஏ.ஐ நோய் வகைப்பாடு",
+    ai_enter_symptoms: "உங்கள் அறிகுறிகளை உள்ளிடவும்",
+    ai_description: "உங்கள் அறிகுறிகளை விரிவாக விவரிக்கவும். ஏ.ஐ அவற்றை பகுப்பாய்வு செய்து ஆரம்ப மதிப்பீட்டை வழங்கும்.",
+    ai_placeholder: "உங்கள் அறிகுறிகளை இங்கே உள்ளிடவும்... (எ.கா., காய்ச்சல், தலைவலி, குமட்டல், வயிற்றுப்போக்கு)",
+    ai_analyze_btn: "🤖 ஏ.ஐ நோயறிதல் பெறுங்கள்",
+    ai_voice_btn: "🎤 குரல் உள்ளீடு",
+    ai_how_works: "இது எப்படி செயல்படுகிறது",
+    ai_analysis: "ஏ.ஐ பகுப்பாய்வு:",
+    ai_analysis_desc: "அறிகுறி வடிவங்களை பகுப்பாய்வு செய்ய இயந்திர கற்றலைப் பயன்படுத்துகிறது",
+    ai_database: "நோய் தரவுத்தளம்:",
+    ai_database_desc: "வடகிழக்கு இந்தியாவில் பொதுவான நீரால் பரவும் நோய்களுடன் பொருந்துகிறது",
+    ai_risk: "ஆபத்து மதிப்பீடு:",
+    ai_risk_desc: "ஆபத்து நிலை மற்றும் பரிந்துரைகளை வழங்குகிறது",
+    ai_disclaimer_title: "மருத்துவ மறுப்பு:",
+    ai_disclaimer_desc: "துல்லியமான நோயறிதலுக்கு எப்போதும் சுகாதார நிபுணர்களை அணுகவும்"
+  },
+  "as-IN": {
+    nav_back: "← ঘৰলৈ উভতি যাওক",
+    nav_diagnosis: "এআই নিদান",
+    ai_title: "🤖 এআই ৰোগ শ্ৰেণীবিভাজন",
+    ai_enter_symptoms: "আপোনাৰ লক্ষণসমূহ দিয়ক",
+    ai_description: "আপোনাৰ লক্ষণসমূহৰ বিস্তৃত বৰ্ণনা দিয়ক। এআইয়ে সেইবোৰ বিশ্লেষণ কৰি প্ৰাৰম্ভিক মূল্যায়ন প্ৰদান কৰিব।",
+    ai_placeholder: "ইয়াত আপোনাৰ লক্ষণসমূহ দিয়ক... (যেনে, জ্বৰ, মূৰৰ বিষ, বমি, ডায়েৰিয়া)",
+    ai_analyze_btn: "🤖 এআই নিদান পাওক",
+    ai_voice_btn: "🎤 ভইচ ইনপুট",
+    ai_how_works: "ই কেনেকৈ কাম কৰে",
+    ai_analysis: "এআই বিশ্লেষণ:",
+    ai_analysis_desc: "লক্ষণ আৰ্হি বিশ্লেষণৰ বাবে মেচিন লাৰ্নিং ব্যৱহাৰ কৰে",
+    ai_database: "ৰোগ ডাটাবেছ:",
+    ai_database_desc: "পূৰ্বোত্তৰ ভাৰতৰ সাধাৰণ পানীজনিত ৰোগৰ সৈতে মিলায়",
+    ai_risk: "বিপদ মূল্যায়ন:",
+    ai_risk_desc: "বিপদৰ স্তৰ আৰু পৰামৰ্শ প্ৰদান কৰে",
+    ai_disclaimer_title: "চিকিৎসা দাবী-পৰিত্যাগ:",
+    ai_disclaimer_desc: "নিখুঁত নিদানৰ বাবে সদায় স্বাস্থ্য বিশেষজ্ঞৰ পৰামৰ্শ লওক"
+  },
+  "bn-IN": {
+    nav_back: "← হোমে ফিরে যান",
+    nav_diagnosis: "এআই নির্ণয়",
+    ai_title: "🤖 এআই রোগ শ্রেণীবিভাগ",
+    ai_enter_symptoms: "আপনার লক্ষণগুলি লিখুন",
+    ai_description: "আপনার লক্ষণগুলির বিস্তারিত বর্ণনা দিন। এআই সেগুলি বিশ্লেষণ করে প্রাথমিক মূল্যায়ন প্রদান করবে।",
+    ai_placeholder: "এখানে আপনার লক্ষণগুলি লিখুন... (যেমন, জ্বর, মাথাব্যথা, বমি বমি ভাব, ডায়রিয়া)",
+    ai_analyze_btn: "🤖 এআই নির্ণয় পান",
+    ai_voice_btn: "🎤 ভয়েস ইনপুট",
+    ai_how_works: "এটি কীভাবে কাজ করে",
+    ai_analysis: "এআই বিশ্লেষণ:",
+    ai_analysis_desc: "লক্ষণ প্যাটার্ন বিশ্লেষণের জন্য মেশিন লার্নিং ব্যবহার করে",
+    ai_database: "রোগ ডাটাবেস:",
+    ai_database_desc: "উত্তর-পূর্ব ভারতের সাধারণ পানিবাহিত রোগের সাথে মেলে",
+    ai_risk: "ঝুঁকি মূল্যায়ন:",
+    ai_risk_desc: "ঝুঁকির মাত্রা এবং সুপারিশ প্রদান করে",
+    ai_disclaimer_title: "চিকিৎসা দাবিত্যাগ:",
+    ai_disclaimer_desc: "নির্ভুল নির্ণয়ের জন্য সর্বদা স্বাস্থ্য পেশাদারদের সাথে পরামর্শ করুন"
+  }
+};
+
+function updateLanguage(lang) {
+  document.querySelectorAll('[data-text]').forEach(element => {
+    const textKey = element.getAttribute('data-text');
+    if (texts[lang] && texts[lang][textKey]) {
+      element.textContent = texts[lang][textKey];
+    }
+  });
+  
+  const symptomInput = document.getElementById('symptomInput');
+  if (symptomInput && texts[lang]['ai_placeholder']) {
+    symptomInput.placeholder = texts[lang]['ai_placeholder'];
+  }
+  
+  // Update selected language display
+  const langNames = {
+    'en-IN': 'English',
+    'hi-IN': 'हिंदी',
+    'ta-IN': 'தமிழ்',
+    'as-IN': 'অসমীয়া',
+    'bn-IN': 'বাংলা'
+  };
+  document.getElementById('selectedLang').textContent = langNames[lang];
+  
+  // Save to localStorage
+  localStorage.setItem('selectedLang', lang);
+}
+
+// Initialize language on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Get saved language from localStorage or use default
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  updateLanguage(savedLang);
+  
+  // Language dropdown functionality
+  const langSelect = document.getElementById('langSelect');
+  const langOptions = document.getElementById('langOptions');
+  
+  langSelect.addEventListener('click', function(e) {
+    e.stopPropagation();
+    langOptions.classList.toggle('show');
+  });
+  
+  document.addEventListener('click', function() {
+    langOptions.classList.remove('show');
+  });
+  
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const selectedLang = this.dataset.lang;
+      updateLanguage(selectedLang);
+      langOptions.classList.remove('show');
+    });
+  });
+});
+
+function analyzeSymptoms() {
+  const symptomInput = document.getElementById('symptomInput');
+  const resultDiv = document.getElementById('diagnosisResult');
+  const currentLang = localStorage.getItem('selectedLang') || 'en-IN';
+  
+  if (!symptomInput.value.trim()) {
+    const alertTexts = {
+      'en-IN': 'Please enter your symptoms first.',
+      'hi-IN': 'कृपया पहले अपने लक्षण दर्ज करें।',
+      'ta-IN': 'முதலில் உங்கள் அறிகுறிகளை உள்ளிடவும்.',
+      'as-IN': 'প্ৰথমে আপোনাৰ লক্ষণসমূহ দিয়ক।',
+      'bn-IN': 'প্রথমে আপনার লক্ষণগুলি লিখুন।'
+    };
+    alert(alertTexts[currentLang] || alertTexts['en-IN']);
+    return;
+  }
+  
+  const symptoms = symptomInput.value.trim().toLowerCase();
+  let diagnosis = '';
+  let riskLevel = 'Low';
+  let riskClass = 'risk-low';
+  let recommendations = [];
+  
+  // AI simulation based on common water-borne disease symptoms
+  if (symptoms.includes('diarrhea') || symptoms.includes('loose stool')) {
+    if (symptoms.includes('fever') || symptoms.includes('vomit')) {
+      diagnosis = 'Possible Gastroenteritis or Food Poisoning';
+      riskLevel = 'Medium';
+      riskClass = 'risk-medium';
+      recommendations = ['Stay hydrated with ORS', 'Rest and avoid solid food', 'Consult doctor if symptoms persist >24hrs'];
+    } else {
+      diagnosis = 'Mild Digestive Issues';
+      riskLevel = 'Low';
+      recommendations = ['Drink plenty of fluids', 'Eat bland foods (BRAT diet)', 'Monitor symptoms'];
+    }
+  } else if (symptoms.includes('fever') && symptoms.includes('headache')) {
+    if (symptoms.includes('chills') || symptoms.includes('body ache')) {
+      diagnosis = 'Possible Viral Infection (Flu-like symptoms)';
+      riskLevel = 'Medium';
+      riskClass = 'risk-medium';
+      recommendations = ['Rest and hydration', 'Monitor temperature', 'Seek medical attention if fever >101°F'];
+    } else {
+      diagnosis = 'General Viral Symptoms';
+      riskLevel = 'Low';
+      recommendations = ['Rest', 'Increase fluid intake', 'Monitor symptoms'];
+    }
+  } else if (symptoms.includes('stomach pain') || symptoms.includes('abdominal pain')) {
+    diagnosis = 'Digestive Discomfort';
+    riskLevel = 'Low';
+    recommendations = ['Avoid spicy/oily foods', 'Drink warm water', 'Rest', 'Consider antacid if needed'];
+  } else if (symptoms.includes('nausea') || symptoms.includes('vomiting')) {
+    diagnosis = 'Gastrointestinal Distress';
+    riskLevel = 'Medium';
+    riskClass = 'risk-medium';
+    recommendations = ['Stay hydrated with small sips', 'Avoid solid food temporarily', 'Seek help if persistent'];
+  } else {
+    diagnosis = 'General Health Consultation Recommended';
+    riskLevel = 'Low';
+    recommendations = ['Monitor symptoms closely', 'Stay hydrated', 'Consult healthcare provider if symptoms worsen'];
+  }
+  
+  // Display results
+  resultDiv.innerHTML = `
+    <div class="diagnosis-result ${riskClass}">
+      <h4>🤖 AI Analysis Results</h4>
+      <p><strong>Symptoms Analyzed:</strong> "${symptomInput.value}"</p>
+      <p><strong>Possible Condition:</strong> ${diagnosis}</p>
+      <p><strong>Risk Level:</strong> <span style="font-weight:bold;color:${riskLevel==='High'?'var(--danger)':riskLevel==='Medium'?'var(--accent)':'var(--success)'}">${riskLevel}</span></p>
+      
+      <h5>Recommendations:</h5>
+      <ul>
+        ${recommendations.map(r => `<li>${r}</li>`).join('')}
+      </ul>
+      
+      <div style="background:#fff3cd;padding:12px;border-radius:6px;margin-top:16px;">
+        <strong>⚠️ Medical Disclaimer:</strong> This AI analysis is for informational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals for accurate diagnosis and treatment.
+      </div>
+      
+      <div style="margin-top:16px;">
+        <button class="btn btn-success" onclick="window.location.href='telemedicine.html'">📞 Consult Doctor Now</button>
+        <button class="btn btn-primary" onclick="window.location.href='HealthSentinel.html'">← Back to Home</button>
+      </div>
+    </div>
+  `;
+  
+  resultDiv.style.display = 'block';
+  resultDiv.scrollIntoView({behavior: 'smooth'});
+}
+
+function startVoiceInput() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Sorry, your browser doesn't support voice recognition. Please use Google Chrome.");
+    return;
+  }
+  
+  const recognition = new webkitSpeechRecognition();
+  const currentLang = localStorage.getItem('selectedLang') || 'en-IN';
+  recognition.lang = currentLang;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  
+  const symptomInput = document.getElementById('symptomInput');
+  
+  recognition.onstart = function() {
+    const startTexts = {
+      'en-IN': 'Voice recognition started. Please speak your symptoms clearly.',
+      'hi-IN': 'वॉइस रिकग्निशन शुरू हुआ। कृपया अपने लक्षण स्पष्ट रूप से बोलें।',
+      'ta-IN': 'குரல் அறிதல் தொடங்கியது. உங்கள் அறிகுறிகளை தெளிவாக பேசுங்கள்.',
+      'as-IN': 'ভইচ ৰিকগনিচন আৰম্ভ হৈছে। আপোনাৰ লক্ষণসমূহ স্পষ্টভাৱে কওক।',
+      'bn-IN': 'ভয়েস রিকগনিশন শুরু হয়েছে। আপনার লক্ষণগুলি স্পষ্টভাবে বলুন।'
+    };
+    alert(startTexts[currentLang] || startTexts['en-IN']);
+  };
+  
+  recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    symptomInput.value += transcript + '. ';
+  };
+  
+  recognition.onerror = function(event) {
+    console.error('Speech recognition error:', event.error);
+    const errorTexts = {
+      'en-IN': 'An error occurred during voice recognition. Please try again.',
+      'hi-IN': 'वॉइस रिकग्निशन के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
+      'ta-IN': 'குரல் அறிதலின் போது பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.',
+      'as-IN': 'ভইচ ৰিকগনিচনৰ সময়ত এটা ত্ৰুটি হৈছে। পুনৰ চেষ্টা কৰক।',
+      'bn-IN': 'ভয়েস রিকগনিশনের সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।'
+    };
+    alert(errorTexts[currentLang] || errorTexts['en-IN']);
+  };
+  
+  recognition.start();
+}
+</script>
+
+</body>
+</html>

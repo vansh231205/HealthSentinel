@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Alerts - HealthSentinel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --shadow:rgba(11,22,36,0.08);
+  --danger:#d32f2f;
+  --warning:#ff9800;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.lang-dropdown{position:relative;display:inline-block;}
+.lang-select{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;min-width:120px;}
+.lang-select:hover{background: rgba(255,255,255,0.18);}
+.lang-options{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);min-width:180px;z-index:1300;margin-top:4px;}
+.lang-options.show{display:block;}
+.lang-option{display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--muted);cursor:pointer;border-bottom:1px solid #f0f0f0;}
+.lang-option:hover{background:#f8f9fa;}
+.lang-option:last-child{border-bottom:none;}
+.lang-flag{font-size:16px;}
+main{max-width:900px;margin:20px auto;padding:20px;}
+.page-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:28px;margin-bottom:20px;text-align:center;}
+.emergency-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 20px var(--shadow);margin-bottom:16px;}
+.alert-critical{border-left:5px solid var(--danger);background:#ffebee;}
+.alert-warning{border-left:5px solid var(--warning);background:#fff8e1;}
+.alert-info{border-left:5px solid var(--nav-end);background:#e3f2fd;}
+.btn{padding:12px 24px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:16px;margin:8px 8px 8px 0;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-primary{background:var(--nav-end);color:#fff;}
+.emergency-number{font-size:24px;font-weight:900;color:var(--danger);text-align:center;margin:10px 0;}
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px;}
+.action-card{background:var(--card);padding:16px;border-radius:8px;text-align:center;cursor:pointer;transition:transform 0.2s;}
+.action-card:hover{transform:translateY(-2px);}
+.action-icon{font-size:32px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html" data-text="nav_back">← Back to Home</a>
+    <a href="#alerts" data-text="nav_alerts">Emergency Alerts</a>
+    <a href="#contacts" data-text="nav_contacts">Emergency Contacts</a>
+  </div>
+  <div class="tools">
+    <div class="lang-dropdown">
+      <button class="lang-select" id="langSelect">
+        <span class="lang-flag">🇮🇳</span>
+        <span id="selectedLang">English</span>
+        <span>▼</span>
+      </button>
+      <div class="lang-options" id="langOptions">
+        <div class="lang-option" data-lang="en-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>English (India)</span>
+        </div>
+        <div class="lang-option" data-lang="hi-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>हिंदी (Hindi)</span>
+        </div>
+        <div class="lang-option" data-lang="ta-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>தமிழ் (Tamil)</span>
+        </div>
+        <div class="lang-option" data-lang="as-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>অসমীয়া (Assamese)</span>
+        </div>
+        <div class="lang-option" data-lang="bn-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>বাংলা (Bengali)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <h1 class="page-title" data-text="emergency_title">🚨 Emergency Health Alerts</h1>
+  
+  <!-- Current Active Alerts -->
+  <div class="emergency-card alert-critical">
+    <h3 data-text="emergency_critical_alert">🚨 CRITICAL ALERT - Water Contamination</h3>
+    <p><strong data-text="emergency_location">Location:</strong> <span data-text="emergency_village_a">Village A, Sector 5</span></p>
+    <p><strong data-text="emergency_issue">Issue:</strong> <span data-text="emergency_ecoli">High E. Coli levels detected in main water source</span></p>
+    <p><strong data-text="emergency_action">Action Required:</strong> <span data-text="emergency_boil_water">Boil all water before consumption. Use bottled water if available.</span></p>
+    <p><strong data-text="emergency_time">Time:</strong> <span data-text="emergency_active_2min">Active since 2 minutes ago</span></p>
+    <button class="btn btn-danger" onclick="reportEmergency('water-contamination')" data-text="emergency_report_similar">Report Similar Issue</button>
+  </div>
+  
+  <div class="emergency-card alert-warning">
+    <h3 data-text="emergency_warning_alert">⚠️ WARNING - Disease Outbreak Pattern</h3>
+    <p><strong data-text="emergency_location">Location:</strong> <span data-text="emergency_zone_b">Zone B Districts</span></p>
+    <p><strong data-text="emergency_issue">Issue:</strong> <span data-text="emergency_diarrhea_increase">Increased diarrhea cases (15% above normal)</span></p>
+    <p><strong data-text="emergency_action">Action Required:</strong> <span data-text="emergency_hygiene_measures">Enhanced hygiene measures, avoid street food</span></p>
+    <p><strong data-text="emergency_time">Time:</strong> <span data-text="emergency_active_15min">Active since 15 minutes ago</span></p>
+    <button class="btn btn-warning" onclick="getHealthGuidance()" data-text="emergency_health_guidance">Get Health Guidance</button>
+  </div>
+  
+  <div class="emergency-card alert-info">
+    <h3 data-text="emergency_info_alert">ℹ️ SYSTEM UPDATE - New Monitoring</h3>
+    <p><strong data-text="emergency_location">Location:</strong> <span data-text="emergency_villages_3">3 Additional Villages</span></p>
+    <p><strong data-text="emergency_update">Update:</strong> <span data-text="emergency_new_sensors">New IoT water sensors installed</span></p>
+    <p><strong data-text="emergency_benefit">Benefit:</strong> <span data-text="emergency_enhanced_warning">Enhanced early warning capability</span></p>
+    <p><strong data-text="emergency_time">Time:</strong> <span data-text="emergency_1hour_ago">1 hour ago</span></p>
+  </div>
+  
+  <!-- Emergency Contacts -->
+  <div class="emergency-card">
+    <h3 data-text="emergency_contacts_title">📞 Emergency Contacts</h3>
+    <div class="emergency-number" data-text="emergency_ambulance">🚑 108 - Emergency Ambulance</div>
+    <div class="emergency-number" data-text="emergency_medical">🏥 102 - Medical Emergency</div>
+    <div class="emergency-number" data-text="emergency_health_worker">📱 +91-9876543210 - Local Health Worker</div>
+    
+    <button class="btn btn-danger" onclick="callEmergency('108')" data-text="emergency_call_108">Call 108 Ambulance</button>
+    <button class="btn btn-primary" onclick="callEmergency('102')" data-text="emergency_call_102">Call 102 Medical</button>
+    <button class="btn btn-warning" onclick="callHealthWorker()" data-text="emergency_call_worker">Call Health Worker</button>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="emergency-card">
+    <h3 data-text="emergency_quick_actions">⚡ Quick Emergency Actions</h3>
+    <div class="quick-actions">
+      <div class="action-card" onclick="reportEmergency('medical')">
+        <div class="action-icon">🏥</div>
+        <h4 data-text="emergency_medical_emergency">Medical Emergency</h4>
+        <p data-text="emergency_medical_desc">Report urgent medical situation</p>
+      </div>
+      
+      <div class="action-card" onclick="reportEmergency('water')">
+        <div class="action-icon">💧</div>
+        <h4 data-text="emergency_water_issue">Water Issue</h4>
+        <p data-text="emergency_water_desc">Report water contamination</p>
+      </div>
+      
+      <div class="action-card" onclick="reportEmergency('outbreak')">
+        <div class="action-icon">🦠</div>
+        <h4 data-text="emergency_disease_outbreak">Disease Outbreak</h4>
+        <p data-text="emergency_outbreak_desc">Report multiple cases</p>
+      </div>
+      
+      <div class="action-card" onclick="getFirstAid()">
+        <div class="action-icon">🩹</div>
+        <h4 data-text="emergency_first_aid">First Aid Guide</h4>
+        <p data-text="emergency_first_aid_desc">Emergency first aid steps</p>
+      </div>
+      
+      <div class="action-card" onclick="locateHospital()">
+        <div class="action-icon">🗺️</div>
+        <h4 data-text="emergency_find_hospital">Find Hospital</h4>
+        <p data-text="emergency_hospital_desc">Locate nearest medical facility</p>
+      </div>
+      
+      <div class="action-card" onclick="shareLocation()">
+        <div class="action-icon">📍</div>
+        <h4 data-text="emergency_share_location">Share Location</h4>
+        <p data-text="emergency_location_desc">Share your location for help</p>
+      </div>
+    </div>
+  </div>
+  
+</main>
+
+<script>
+// Language support system
+const texts = {
+  "en-IN": {
+    nav_back: "← Back to Home",
+    nav_alerts: "Emergency Alerts", 
+    nav_contacts: "Emergency Contacts",
+    emergency_title: "🚨 Emergency Health Alerts",
+    emergency_critical_alert: "🚨 CRITICAL ALERT - Water Contamination",
+    emergency_warning_alert: "⚠️ WARNING - Disease Outbreak Pattern", 
+    emergency_info_alert: "ℹ️ SYSTEM UPDATE - New Monitoring",
+    emergency_location: "Location:",
+    emergency_issue: "Issue:",
+    emergency_action: "Action Required:",
+    emergency_time: "Time:",
+    emergency_update: "Update:",
+    emergency_benefit: "Benefit:",
+    emergency_village_a: "Village A, Sector 5",
+    emergency_zone_b: "Zone B Districts",
+    emergency_villages_3: "3 Additional Villages",
+    emergency_ecoli: "High E. Coli levels detected in main water source",
+    emergency_diarrhea_increase: "Increased diarrhea cases (15% above normal)",
+    emergency_new_sensors: "New IoT water sensors installed",
+    emergency_boil_water: "Boil all water before consumption. Use bottled water if available.",
+    emergency_hygiene_measures: "Enhanced hygiene measures, avoid street food",
+    emergency_enhanced_warning: "Enhanced early warning capability",
+    emergency_active_2min: "Active since 2 minutes ago",
+    emergency_active_15min: "Active since 15 minutes ago", 
+    emergency_1hour_ago: "1 hour ago",
+    emergency_report_similar: "Report Similar Issue",
+    emergency_health_guidance: "Get Health Guidance",
+    emergency_contacts_title: "📞 Emergency Contacts",
+    emergency_ambulance: "🚑 108 - Emergency Ambulance",
+    emergency_medical: "🏥 102 - Medical Emergency",
+    emergency_health_worker: "📱 +91-9876543210 - Local Health Worker",
+    emergency_call_108: "Call 108 Ambulance",
+    emergency_call_102: "Call 102 Medical",
+    emergency_call_worker: "Call Health Worker",
+    emergency_quick_actions: "⚡ Quick Emergency Actions",
+    emergency_medical_emergency: "Medical Emergency",
+    emergency_medical_desc: "Report urgent medical situation",
+    emergency_water_issue: "Water Issue",
+    emergency_water_desc: "Report water contamination",
+    emergency_disease_outbreak: "Disease Outbreak",
+    emergency_outbreak_desc: "Report multiple cases",
+    emergency_first_aid: "First Aid Guide",
+    emergency_first_aid_desc: "Emergency first aid steps",
+    emergency_find_hospital: "Find Hospital",
+    emergency_hospital_desc: "Locate nearest medical facility",
+    emergency_share_location: "Share Location",
+    emergency_location_desc: "Share your location for help"
+  },
+  "hi-IN": {
+    nav_back: "← होम पर वापस",
+    nav_alerts: "आपातकालीन अलर्ट",
+    nav_contacts: "आपातकालीन संपर्क",
+    emergency_title: "🚨 आपातकालीन स्वास्थ्य अलर्ट",
+    emergency_critical_alert: "🚨 महत्वपूर्ण अलर्ट - जल संदूषण",
+    emergency_warning_alert: "⚠️ चेतावनी - रोग प्रकोप पैटर्न",
+    emergency_info_alert: "ℹ️ सिस्टम अपडेट - नई निगरानी",
+    emergency_location: "स्थान:",
+    emergency_issue: "समस्या:",
+    emergency_action: "आवश्यक कार्रवाई:",
+    emergency_time: "समय:",
+    emergency_update: "अपडेट:",
+    emergency_benefit: "लाभ:",
+    emergency_village_a: "गांव ए, सेक्टर 5",
+    emergency_zone_b: "जोन बी जिले",
+    emergency_villages_3: "3 अतिरिक्त गांव",
+    emergency_ecoli: "मुख्य जल स्रोत में उच्च ई. कोलाई स्तर का पता चला",
+    emergency_diarrhea_increase: "डायरिया के मामलों में वृद्धि (सामान्य से 15% अधिक)",
+    emergency_new_sensors: "नए IoT जल सेंसर स्थापित",
+    emergency_boil_water: "उपभोग से पहले सभी पानी उबालें। यदि उपलब्ध हो तो बोतलबंद पानी का उपयोग करें।",
+    emergency_hygiene_measures: "बेहतर स्वच्छता उपाय, स्ट्रीट फूड से बचें",
+    emergency_enhanced_warning: "बेहतर प्रारंभिक चेतावनी क्षमता",
+    emergency_active_2min: "2 मिनट पहले से सक्रिय",
+    emergency_active_15min: "15 मिनट पहले से सक्रिय",
+    emergency_1hour_ago: "1 घंटा पहले",
+    emergency_report_similar: "समान समस्या की रिपोर्ट करें",
+    emergency_health_guidance: "स्वास्थ्य मार्गदर्शन प्राप्त करें",
+    emergency_contacts_title: "📞 आपातकालीन संपर्क",
+    emergency_ambulance: "🚑 108 - आपातकालीन एम्बुलेंस",
+    emergency_medical: "🏥 102 - मेडिकल इमरजेंसी",
+    emergency_health_worker: "📱 +91-9876543210 - स्थानीय स्वास्थ्य कार्यकर्ता",
+    emergency_call_108: "108 एम्बुलेंस कॉल करें",
+    emergency_call_102: "102 मेडिकल कॉल करें",
+    emergency_call_worker: "स्वास्थ्य कार्यकर्ता को कॉल करें",
+    emergency_quick_actions: "⚡ त्वरित आपातकालीन कार्रवाई",
+    emergency_medical_emergency: "मेडिकल इमरजेंसी",
+    emergency_medical_desc: "तत्काल चिकित्सा स्थिति की रिपोर्ट करें",
+    emergency_water_issue: "पानी की समस्या",
+    emergency_water_desc: "जल संदूषण की रिपोर्ट करें",
+    emergency_disease_outbreak: "रोग प्रकोप",
+    emergency_outbreak_desc: "कई मामलों की रिपोर्ट करें",
+    emergency_first_aid: "प्राथमिक चिकित्सा गाइड",
+    emergency_first_aid_desc: "आपातकालीन प्राथमिक चिकित्सा चरण",
+    emergency_find_hospital: "अस्पताल खोजें",
+    emergency_hospital_desc: "निकटतम चिकित्सा सुविधा का पता लगाएं",
+    emergency_share_location: "स्थान साझा करें",
+    emergency_location_desc: "सहायता के लिए अपना स्थान साझा करें"
+  },
+  "ta-IN": {
+    nav_back: "← முகப்புக்கு திரும்பு",
+    nav_alerts: "அவசர எச்சரிக்கைகள்",
+    nav_contacts: "அவசர தொடர்புகள்",
+    emergency_title: "🚨 அவசர சுகாதார எச்சரிக்கைகள்",
+    emergency_critical_alert: "🚨 முக்கிய எச்சரிக்கை - நீர் மலிநீகரணம்",
+    emergency_warning_alert: "⚠️ எச்சரிக்கை - நோய் பரவல் வடிவம்",
+    emergency_info_alert: "ℹ️ சிஸ்டம் அப்டேட் - புதிய கண்காணிப்பு",
+    emergency_location: "இடம்:",
+    emergency_issue: "பிரச்சினை:",
+    emergency_action: "தேவையான நடவடிக்கை:",
+    emergency_time: "நேரம்:",
+    emergency_update: "அப்டேட்:",
+    emergency_benefit: "நன்மை:",
+    emergency_village_a: "கிராமம் ஏ, பிரிவு 5",
+    emergency_zone_b: "மண்டல பி மாவட்டங்கள்",
+    emergency_villages_3: "3 கூடுதல் கிராமங்கள்",
+    emergency_ecoli: "முக்கிய நீர் மூலத்தில் உயர்ந்த ஈ. கோலை நிலைகள் கண்டறியப்பட்டு",
+    emergency_diarrhea_increase: "வயிற்றுப்போக்கு வழக்குகள் அதிகரிக்கும் (சாதாரணத்தை விட 15% அதிகம்)",
+    emergency_new_sensors: "புதிய IoT நீர் சென்சர்கள் நுழைக்கப்பட்டன",
+    emergency_boil_water: "உபயோகிக்கும் முன் எல்லா நீரையும் காய்ச்சவும். உள்ளது என்றால் பாட்டில் நீரை பயன்படுத்தவும்.",
+    emergency_hygiene_measures: "மேம்படுத்தப்பட்ட சுகாதார நடவடிக்கைகள், தெரு உணவை தவிர்க்கவும்",
+    emergency_enhanced_warning: "மேம்படுத்தப்பட்ட ஆரம் எச்சரிக்கை திறன்",
+    emergency_active_2min: "2 நிமிடங்களுக்கு முன்னால் செயல்படு",
+    emergency_active_15min: "15 நிமிடங்களுக்கு முன்னால் செயல்படு",
+    emergency_1hour_ago: "1 மணி நேரம் முன்னர்",
+    emergency_report_similar: "இதே மாதிரி பிரச்சினை தெரியிடவும்",
+    emergency_health_guidance: "சுகாதார வழிகாட்டல் பெறவும்",
+    emergency_contacts_title: "📞 அவசர தொடர்புகள்",
+    emergency_ambulance: "🚑 108 - அவசர ஆம்புலன்ச்",
+    emergency_medical: "🏥 102 - மருத்துவ அவசரநிலை",
+    emergency_health_worker: "📱 +91-9876543210 - உள்ளூர் சுகாதார பணியாளர்",
+    emergency_call_108: "108 ஆம்புலன்சை அழைக்கவும்",
+    emergency_call_102: "102 மருத்துவை அழைக்கவும்",
+    emergency_call_worker: "சுகாதார பணியாளரை அழைக்கவும்",
+    emergency_quick_actions: "⚡ வேகமான அவசர நடவடிக்கைகள்",
+    emergency_medical_emergency: "மருத்துவ அவசரநிலை",
+    emergency_medical_desc: "அவசர மருத்துவ நிலைமை தெரியிடவும்",
+    emergency_water_issue: "நீர் பிரச்சினை",
+    emergency_water_desc: "நீர் மலிநீகரணத்தை தெரியிடவும்",
+    emergency_disease_outbreak: "நோய் பரவல்",
+    emergency_outbreak_desc: "பல வழக்குகளை தெரியிடவும்",
+    emergency_first_aid: "முதல் உதவி வழிகாட்டி",
+    emergency_first_aid_desc: "அவசர முதல் உதவி படிகள்",
+    emergency_find_hospital: "மருத்துவமனை கண்டுபிடிக்கவும்",
+    emergency_hospital_desc: "அருகிலுள்ள மருத்துவ வசதியை கண்டறியவும்",
+    emergency_share_location: "இடத்தை பகிரவும்",
+    emergency_location_desc: "உதவிக்காக உங்கள் இடத்தை பகிரவும்"
+  },
+  "as-IN": {
+    nav_back: "← ঘৰলৈ উভতি যাওক",
+    nav_alerts: "জৰুৰীকালীন সতৰ্কবাণী",
+    nav_contacts: "জৰুৰীকালীন যোগাযোগ",
+    emergency_title: "🚨 জৰুৰীকালীন স্বাস্থ্য সতৰ্কবাণী",
+    emergency_critical_alert: "🚨 গুৰুত্বপূৰ্ণ সতৰ্কবাণী - পানী দূষণ",
+    emergency_warning_alert: "⚠️ সতৰ্কবাণী - ৰোগ প্ৰকোপৰ আৰ্হি",
+    emergency_info_alert: "ℹ️ ছিষ্টেম আপডেট - নতুন নিৰীক্ষণ",
+    emergency_location: "স্থান:",
+    emergency_issue: "সমস্যা:",
+    emergency_action: "প্ৰয়োজনীয় পদক্ষেপ:",
+    emergency_time: "সময়:",
+    emergency_update: "আপডেট:",
+    emergency_benefit: "উপকাৰ:",
+    emergency_village_a: "গাঁও এ, ক্ষেত্ৰ ৫",
+    emergency_zone_b: "এলেকা বি জিলাসমূহ",
+    emergency_villages_3: "৩টি অতিৰিক্ত গাঁও",
+    emergency_ecoli: "মূল পানীৰ উৎসত উচ্চ ই. কলাই স্তৰ ধৰা পৰিছে",
+    emergency_diarrhea_increase: "ডায়েৰিয়াৰ ক্ষেত্ৰ বৃদ্ধি (স্বাভাৱিকতকৈ ১৫% বেছি)",
+    emergency_new_sensors: "নতুন আইওটি পানী চেন্সৰ স্থাপন",
+    emergency_boil_water: "ব্যৱহাৰৰ আগতে সকলো পানী উতলাওক। উপলব্ধ থাকিলে বটলৰ পানী ব্যৱহাৰ কৰক।",
+    emergency_hygiene_measures: "উন্নত স্বচ্ছতা ব্যৱস্থা, ৰাস্তাৰ খাদ্য এৰাই চলক",
+    emergency_enhanced_warning: "উন্নত আৰম্ভণি সতৰ্কবাণী ক্ষমতা",
+    emergency_active_2min: "২ মিনিট আগৰ পৰা সক্ৰিয়",
+    emergency_active_15min: "১৫ মিনিট আগৰ পৰা সক্ৰিয়",
+    emergency_1hour_ago: "১ ঘণ্টা আগতে",
+    emergency_report_similar: "একেধৰণৰ সমস্যাৰ প্ৰতিবেদন দিয়ক",
+    emergency_health_guidance: "স্বাস্থ্য পথপ্ৰদৰ্শন পাওক",
+    emergency_contacts_title: "📞 জৰুৰীকালীন যোগাযোগ",
+    emergency_ambulance: "🚑 ১০৮ - জৰুৰীকালীন এম্বুলেন্স",
+    emergency_medical: "🏥 ১০২ - চিকিৎসা জৰুৰী",
+    emergency_health_worker: "📱 +৯১-৯৮৭৬৫৪৩২১০ - স্থানীয় স্বাস্থ্য কৰ্মী",
+    emergency_call_108: "১০৮ এম্বুলেন্স কল কৰক",
+    emergency_call_102: "১০২ চিকিৎসা কল কৰক",
+    emergency_call_worker: "স্বাস্থ্য কৰ্মীক কল কৰক",
+    emergency_quick_actions: "⚡ দ্ৰুত জৰুৰীকালীন কাৰ্য",
+    emergency_medical_emergency: "চিকিৎসা জৰুৰী",
+    emergency_medical_desc: "জৰুৰী চিকিৎসা পৰিস্থিতিৰ প্ৰতিবেদন দিয়ক",
+    emergency_water_issue: "পানীৰ সমস্যা",
+    emergency_water_desc: "পানী দূষণৰ প্ৰতিবেদন দিয়ক",
+    emergency_disease_outbreak: "ৰোগৰ প্ৰকোপ",
+    emergency_outbreak_desc: "একাধিক ঘটনাৰ প্ৰতিবেদন দিয়ক",
+    emergency_first_aid: "প্ৰাথমিক চিকিৎসা গাইড",
+    emergency_first_aid_desc: "জৰুৰীকালীন প্ৰাথমিক চিকিৎসা পদক্ষেপ",
+    emergency_find_hospital: "চিকিৎসালয় বিচাৰক",
+    emergency_hospital_desc: "নিকটতম চিকিৎসা সুবিধা বিচাৰি উলিয়াওক",
+    emergency_share_location: "স্থান শ্বেয়াৰ কৰক",
+    emergency_location_desc: "সহায়ৰ বাবে আপোনাৰ স্থান শ্বেয়াৰ কৰক"
+  },
+  "bn-IN": {
+    nav_back: "← হোমে ফিরে যান",
+    nav_alerts: "জরুরি সতর্কতা",
+    nav_contacts: "জরুরি যোগাযোগ",
+    emergency_title: "🚨 জরুরি স্বাস্থ্য সতর্কতা",
+    emergency_critical_alert: "🚨 গুরুত্বপূর্ণ সতর্কতা - জল দূষণ",
+    emergency_warning_alert: "⚠️ সতর্কতা - রোগ প্রকোপের ধরন",
+    emergency_info_alert: "ℹ️ সিস্টেম আপডেট - নতুন মনিটরিং",
+    emergency_location: "অবস্থান:",
+    emergency_issue: "সমস্যা:",
+    emergency_action: "প্রয়োজনীয় পদক্ষেপ:",
+    emergency_time: "সময়:",
+    emergency_update: "আপডেট:",
+    emergency_benefit: "সুবিধা:",
+    emergency_village_a: "গ্রাম এ, সেক্টর ৫",
+    emergency_zone_b: "জোন বি জেলাগুলি",
+    emergency_villages_3: "৩টি অতিরিক্ত গ্রাম",
+    emergency_ecoli: "প্রধান জলের উৎসে উচ্চ ই. কোলাই মাত্রা শনাক্ত",
+    emergency_diarrhea_increase: "ডায়রিয়ার ক্ষেত্রে বৃদ্ধি (স্বাভাবিকের চেয়ে ১৫% বেশি)",
+    emergency_new_sensors: "নতুন IoT জল সেন্সর স্থাপিত",
+    emergency_boil_water: "ব্যবহারের আগে সব জল ফুটান। উপলব্ধ থাকলে বোতলের জল ব্যবহার করুন।",
+    emergency_hygiene_measures: "উন্নত স্বাস্থ্যবিধি ব্যবস্থা, রাস্তার খাবার এড়িয়ে চলুন",
+    emergency_enhanced_warning: "উন্নত প্রাথমিক সতর্কতা ক্ষমতা",
+    emergency_active_2min: "২ মিনিট আগে থেকে সক্রিয়",
+    emergency_active_15min: "১৫ মিনিট আগে থেকে সক্রিয়",
+    emergency_1hour_ago: "১ ঘন্টা আগে",
+    emergency_report_similar: "অনুরূপ সমস্যার রিপোর্ট করুন",
+    emergency_health_guidance: "স্বাস্থ্য নির্দেশনা পান",
+    emergency_contacts_title: "📞 জরুরি যোগাযোগ",
+    emergency_ambulance: "🚑 ১০৮ - জরুরি অ্যাম্বুলেন্স",
+    emergency_medical: "🏥 ১০২ - মেডিকেল ইমার্জেন্সি",
+    emergency_health_worker: "📱 +৯১-৯৮৭৬৫৪৩২১০ - স্থানীয় স্বাস্থ্য কর্মী",
+    emergency_call_108: "১০৮ অ্যাম্বুলেন্স কল করুন",
+    emergency_call_102: "১০২ মেডিকেল কল করুন",
+    emergency_call_worker: "স্বাস্থ্য কর্মীকে কল করুন",
+    emergency_quick_actions: "⚡ দ্রুত জরুরি পদক্ষেপ",
+    emergency_medical_emergency: "মেডিকেল ইমার্জেন্সি",
+    emergency_medical_desc: "জরুরি চিকিৎসা পরিস্থিতির রিপোর্ট করুন",
+    emergency_water_issue: "জলের সমস্যা",
+    emergency_water_desc: "জল দূষণের রিপোর্ট করুন",
+    emergency_disease_outbreak: "রোগ প্রকোপ",
+    emergency_outbreak_desc: "একাধিক ক্ষেত্রের রিপোর্ট করুন",
+    emergency_first_aid: "প্রাথমিক চিকিৎসা গাইড",
+    emergency_first_aid_desc: "জরুরি প্রাথমিক চিকিৎসার পদক্ষেপ",
+    emergency_find_hospital: "হাসপাতাল খুঁজুন",
+    emergency_hospital_desc: "নিকটতম চিকিৎসা সুবিধা সনাক্ত করুন",
+    emergency_share_location: "অবস্থান শেয়ার করুন",
+    emergency_location_desc: "সাহায্যের জন্য আপনার অবস্থান শেয়ার করুন"
+  }
+  // Additional languages can be added here
+};
+
+function updateLanguage(lang) {
+  document.querySelectorAll('[data-text]').forEach(element => {
+    const textKey = element.getAttribute('data-text');
+    if (texts[lang] && texts[lang][textKey]) {
+      element.textContent = texts[lang][textKey];
+    }
+  });
+  
+  // Update selected language display
+  const langNames = {
+    'en-IN': 'English',
+    'hi-IN': 'हिंदी',
+    'ta-IN': 'தமிழ்',
+    'as-IN': 'অসমীয়া',
+    'bn-IN': 'বাংলা'
+  };
+  document.getElementById('selectedLang').textContent = langNames[lang];
+  
+  // Save to localStorage
+  localStorage.setItem('selectedLang', lang);
+}
+
+// Initialize language on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Get saved language from localStorage or use default
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  updateLanguage(savedLang);
+  
+  // Language dropdown functionality
+  const langSelect = document.getElementById('langSelect');
+  const langOptions = document.getElementById('langOptions');
+  
+  langSelect.addEventListener('click', function(e) {
+    e.stopPropagation();
+    langOptions.classList.toggle('show');
+  });
+  
+  document.addEventListener('click', function() {
+    langOptions.classList.remove('show');
+  });
+  
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const selectedLang = this.dataset.lang;
+      updateLanguage(selectedLang);
+      langOptions.classList.remove('show');
+    });
+  });
+});
+
+function callEmergency(number) {
+  if (confirm(`Call emergency number ${number}?\n\nThis will dial ${number} immediately.`)) {
+    window.location.href = `tel:${number}`;
+  }
+}
+
+function callHealthWorker() {
+  const healthWorkerNumber = '+91-9876543210';
+  if (confirm(`Call local health worker?\n\nThis will dial ${healthWorkerNumber}`)) {
+    window.location.href = `tel:${healthWorkerNumber}`;
+  }
+}
+
+function reportEmergency(type) {
+  let message = '';
+  let actionUrl = '';
+  
+  switch(type) {
+    case 'medical':
+      message = 'Reporting medical emergency...\n\nYou will be connected to emergency services.';
+      actionUrl = 'tel:108';
+      break;
+    case 'water':
+      message = 'Reporting water contamination...\n\nHealth authorities will be notified.';
+      actionUrl = 'crowdsourced-reporting.html';
+      break;
+    case 'outbreak':
+      message = 'Reporting disease outbreak...\n\nEpidemic response team will be alerted.';
+      actionUrl = 'crowdsourced-reporting.html';
+      break;
+    case 'water-contamination':
+      message = 'Reporting similar water contamination issue...';
+      actionUrl = 'crowdsourced-reporting.html';
+      break;
+  }
+  
+  alert(message);
+  if (actionUrl) {
+    window.location.href = actionUrl;
+  }
+}
+
+function getHealthGuidance() {
+  alert(`HEALTH GUIDANCE - Disease Prevention:
+
+• Wash hands frequently with soap
+• Drink only boiled or bottled water
+• Avoid street food and raw vegetables
+• Seek medical attention for symptoms
+• Report cases to health authorities
+
+For detailed guidance, visit our Health Education section.`);
+}
+
+function getFirstAid() {
+  alert(`FIRST AID GUIDELINES:
+
+🚨 SEVERE DEHYDRATION:
+• Give ORS solution in small sips
+• Keep patient conscious and sitting
+• Call 108 immediately
+
+🤒 HIGH FEVER:
+• Cool with damp cloth
+• Give paracetamol as per age
+• Increase fluid intake
+
+🤮 VOMITING/DIARRHEA:
+• Give ORS every 15 minutes
+• Avoid solid food
+• Monitor for dehydration signs
+
+⚠️ Call 108 if condition worsens`);
+}
+
+function locateHospital() {
+  alert(`NEAREST MEDICAL FACILITIES:
+
+🏥 District Hospital
+Distance: 2.5 km
+Phone: +91-9876543210
+
+🏥 Primary Health Center
+Distance: 1.2 km
+Phone: +91-9876543211
+
+🚑 Ambulance Service
+Phone: 108 (Free)
+
+For GPS navigation, use Google Maps or similar app.`);
+}
+
+function shareLocation() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const locationUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Emergency Location - HealthSentinel',
+          text: `Emergency situation at my location. Please send help.`,
+          url: locationUrl,
+        });
+      } else {
+        // Fallback for browsers without Web Share API
+        const shareText = `Emergency situation at my location: ${locationUrl}\n\nSent via HealthSentinel Emergency System`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareText);
+          alert('Location copied to clipboard. You can paste and send this to emergency contacts.');
+        } else {
+          alert(`Share this location:\n\n${shareText}`);
+        }
+      }
+    }, function(error) {
+      alert('Unable to get location. Please manually share your address with emergency contacts.');
+    });
+  } else {
+    alert('Geolocation not supported. Please manually share your address.');
+  }
+}
+
+// Auto-refresh alerts every 30 seconds
+setInterval(function() {
+  console.log('Checking for new emergency alerts...');
+  // In a real app, this would fetch new alerts from the server
+}, 30000);
+</script>
+
+</body>
+</html>

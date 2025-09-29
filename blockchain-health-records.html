@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSentinel - Blockchain Health Records</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7fbf8;--nav-start:#2b7a78;--nav-end:#023e8a;--accent:#ffb703;--card:#fff;--muted:#3a3a3a;--success:#2d6a4f;--danger:#d32f2f;--shadow:rgba(11,22,36,0.08);}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;scroll-behavior:smooth;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.settings-btn{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.lang-dropdown{position:relative;display:inline-block;}
+.lang-select{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;min-width:120px;}
+.lang-options{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);min-width:180px;z-index:1300;margin-top:4px;}
+.lang-options.show{display:block;}
+.lang-option{display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--muted);cursor:pointer;border-bottom:1px solid #f0f0f0;}
+.lang-option:hover{background:#f8f9fa;}
+main{max-width:1200px;margin:18px auto;padding:12px;}
+.hero{background: linear-gradient(135deg,#e8f5e8 0%, #fff3e0 100%);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center;box-shadow: 0 10px 30px var(--shadow);margin-bottom:18px;}
+.hero .left{flex:1;}
+.brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:32px;margin:0 0 6px 0;}
+.subtitle{font-size:16px;color:var(--muted);margin:0 0 12px 0;}
+.hero p{margin:0;color:#2f4858;font-weight:600;font-size:14.5px;}
+.section-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);margin:8px 0 18px 0;font-size:20px;}
+.records-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0;}
+.record-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 20px rgba(8,30,45,0.06);}
+.record-header{display:flex;justify-content:between;align-items:center;margin-bottom:16px;}
+.record-type{background:var(--nav-end);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.record-date{color:#666;font-size:14px;}
+.record-content{margin:12px 0;}
+.hash-display{background:#f8f9fa;padding:12px;border-radius:8px;font-family:monospace;font-size:12px;word-break:break-all;color:#666;}
+.verification-badge{display:inline-flex;align-items:center;gap:4px;background:var(--success);color:#fff;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;}
+.new-record-form{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 20px rgba(8,30,45,0.06);margin:20px 0;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:2px solid #e9ecef;border-radius:8px;font-size:14px;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--nav-end);}
+.cta{background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;border:none;padding:12px 20px;border-radius:8px;font-weight:700;cursor:pointer;width:100%;font-size:16px;}
+.cta:hover{opacity:0.9;}
+.blockchain-info{background:linear-gradient(135deg,#e3f2fd,#f3e5f5);border-radius:12px;padding:20px;margin:20px 0;text-align:center;}
+.chain-block{display:inline-block;background:#fff;border:2px solid var(--nav-end);border-radius:8px;padding:8px 12px;margin:4px;font-family:monospace;font-size:12px;}
+@media (max-width:768px){.records-grid{grid-template-columns:1fr;}.hero{flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html" data-text="home">🏠 Home</a>
+    <a href="HealthSentinel.html#alerts" data-text="alerts">🚨 Alerts</a>
+  </div>
+  <div class="tools">
+    <div class="lang-dropdown">
+      <button class="lang-select" id="langSelect">
+        <span class="lang-flag">🇮🇳</span>
+        <span id="selectedLang">English</span>
+        <span>▼</span>
+      </button>
+      <div class="lang-options" id="langOptions">
+        <div class="lang-option" data-lang="en-IN"><span class="lang-flag">🇮🇳</span><span>English</span></div>
+        <div class="lang-option" data-lang="hi-IN"><span class="lang-flag">🇮🇳</span><span>हिंदी</span></div>
+        <div class="lang-option" data-lang="ta-IN"><span class="lang-flag">🇮🇳</span><span>தமிழ்</span></div>
+        <div class="lang-option" data-lang="as-IN"><span class="lang-flag">🇮🇳</span><span>অসমীয়া</span></div>
+        <div class="lang-option" data-lang="bn-IN"><span class="lang-flag">🇮🇳</span><span>বাংলা</span></div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsBtn" data-text="settings">⚙️ Settings</button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="left">
+      <h1 class="brand" data-text="brand_title">HealthSentinel</h1>
+      <p class="subtitle" data-text="subtitle">Blockchain Health Records</p>
+      <p data-text="description">Secure, tamper-proof health records stored on blockchain technology. Your health data is encrypted and verified.</p>
+    </div>
+    <div style="width:220px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">🔗</div>
+      <div style="font-weight:700;color:var(--success)" data-text="security_text">Secure • Verified • Immutable</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title" data-text="your_records">📊 Your Health Records</h2>
+    <div class="records-grid" id="recordsGrid">
+      <!-- Records will be populated by JavaScript -->
+    </div>
+
+    <!-- Add New Record Form -->
+    <div class="new-record-form">
+      <h2 class="section-title" data-text="add_record">➕ Add New Health Record</h2>
+      <form id="recordForm">
+        <div class="form-group">
+          <label data-text="record_type">Record Type:</label>
+          <select id="recordType" required>
+            <option value="" data-text="select_type">Select type...</option>
+            <option value="symptom_report" data-text="symptom_report">Symptom Report</option>
+            <option value="consultation" data-text="consultation">Doctor Consultation</option>
+            <option value="test_result" data-text="test_result">Test Result</option>
+            <option value="prescription" data-text="prescription">Prescription</option>
+            <option value="vaccination" data-text="vaccination">Vaccination</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label data-text="details">Details:</label>
+          <textarea id="recordDetails" rows="3" placeholder="Enter health record details..." required></textarea>
+        </div>
+        
+        <button type="submit" class="cta" data-text="add_to_blockchain">🔗 Add to Blockchain</button>
+      </form>
+    </div>
+
+    <!-- Blockchain Visualization -->
+    <div class="blockchain-info">
+      <h2 class="section-title" data-text="blockchain_verification">🔗 Blockchain Verification</h2>
+      <p data-text="blockchain_desc">Your health records are secured in an immutable blockchain:</p>
+      <div id="blockchainVisualization">
+        <div class="chain-block">Block #1</div>
+        <div class="chain-block">Block #2</div>
+        <div class="chain-block">Block #3</div>
+        <div class="chain-block">Block #4</div>
+      </div>
+      <p style="margin-top:16px;color:#666;font-size:14px;" data-text="blockchain_footer">Each block contains encrypted health data with cryptographic verification</p>
+    </div>
+  </section>
+</main>
+
+<script>
+// Blockchain Health Records System
+let healthRecords = [];
+
+// Simulate blockchain hash generation
+function generateHash(data) {
+  let hash = 0;
+  const str = JSON.stringify(data) + Date.now();
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash).toString(16).padStart(8, '0');
+}
+
+// Initialize with sample records
+function initializeRecords() {
+  healthRecords = [
+    {
+      id: 1,
+      type: 'symptom_report',
+      details: 'Reported mild fever and headache. No other symptoms.',
+      date: new Date('2024-01-15'),
+      hash: generateHash({type: 'symptom_report', details: 'Reported mild fever and headache'}),
+      verified: true
+    },
+    {
+      id: 2,
+      type: 'consultation',
+      details: 'Virtual consultation with Dr. Sharma. Diagnosed with viral fever. Prescribed rest and hydration.',
+      date: new Date('2024-01-16'),
+      hash: generateHash({type: 'consultation', details: 'Virtual consultation with Dr. Sharma'}),
+      verified: true
+    },
+    {
+      id: 3,
+      type: 'prescription',
+      details: 'Paracetamol 500mg, twice daily for 3 days. ORS solution as needed.',
+      date: new Date('2024-01-16'),
+      hash: generateHash({type: 'prescription', details: 'Paracetamol 500mg, twice daily'}),
+      verified: true
+    }
+  ];
+}
+
+function getRecordTypeLabel(type) {
+  const labels = {
+    'symptom_report': '🤒 Symptom Report',
+    'consultation': '👨‍⚕️ Consultation',
+    'test_result': '🧪 Test Result', 
+    'prescription': '💊 Prescription',
+    'vaccination': '💉 Vaccination'
+  };
+  return labels[type] || type;
+}
+
+function renderRecords() {
+  const grid = document.getElementById('recordsGrid');
+  
+  grid.innerHTML = healthRecords.map(record => `
+    <div class="record-card">
+      <div class="record-header">
+        <div class="record-type">${getRecordTypeLabel(record.type)}</div>
+        <div class="record-date">${record.date.toLocaleDateString()}</div>
+      </div>
+      
+      <div class="record-content">
+        <p>${record.details}</p>
+      </div>
+      
+      <div class="hash-display">
+        <strong>Blockchain Hash:</strong><br>
+        0x${record.hash}
+      </div>
+      
+      <div style="margin-top:12px;">
+        ${record.verified ? 
+          '<span class="verification-badge">✅ Verified on Blockchain</span>' : 
+          '<span style="color:orange;">⏳ Pending Verification</span>'
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function addNewRecord() {
+  const recordType = document.getElementById('recordType').value;
+  const recordDetails = document.getElementById('recordDetails').value;
+  
+  if (!recordType || !recordDetails) {
+    alert('Please fill in all fields.');
+    return;
+  }
+  
+  const newRecord = {
+    id: healthRecords.length + 1,
+    type: recordType,
+    details: recordDetails,
+    date: new Date(),
+    hash: generateHash({type: recordType, details: recordDetails}),
+    verified: false
+  };
+  
+  healthRecords.unshift(newRecord); // Add to beginning
+  renderRecords();
+  
+  // Simulate blockchain verification
+  setTimeout(() => {
+    newRecord.verified = true;
+    renderRecords();
+    showNotification('✅ Record added to blockchain successfully!');
+  }, 3000);
+  
+  // Clear form
+  document.getElementById('recordForm').reset();
+  showNotification('📝 Record submitted for blockchain verification...');
+}
+
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 600;
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+  // Text translations
+  const texts = {
+    "en-IN": {
+      home: "🏠 Home",
+      alerts: "🚨 Alerts",
+      settings: "⚙️ Settings",
+      brand_title: "HealthSentinel",
+      subtitle: "Blockchain Health Records",
+      description: "Secure, tamper-proof health records stored on blockchain technology. Your health data is encrypted and verified.",
+      security_text: "Secure • Verified • Immutable",
+      your_records: "📊 Your Health Records",
+      add_record: "➕ Add New Health Record",
+      record_type: "Record Type:",
+      select_type: "Select type...",
+      symptom_report: "Symptom Report",
+      consultation: "Doctor Consultation",
+      test_result: "Test Result",
+      prescription: "Prescription",
+      vaccination: "Vaccination",
+      details: "Details:",
+      details_placeholder: "Enter health record details...",
+      add_to_blockchain: "🔗 Add to Blockchain",
+      blockchain_verification: "🔗 Blockchain Verification",
+      blockchain_desc: "Your health records are secured in an immutable blockchain:",
+      blockchain_footer: "Each block contains encrypted health data with cryptographic verification"
+    },
+    "hi-IN": {
+      home: "🏠 होम",
+      alerts: "🚨 अलर्ट",
+      settings: "⚙️ सेटिंग्स",
+      brand_title: "हेल्थसेंटिनल",
+      subtitle: "ब्लॉकचेन स्वास्थ्य रिकॉर्ड",
+      description: "ब्लॉकचेन तकनीक पर संग्रहीत सुरक्षित, छेड़छाड़-रहित स्वास्थ्य रिकॉर्ड। आपका स्वास्थ्य डेटा एन्क्रिप्टेड और सत्यापित है।",
+      security_text: "सुरक्षित • सत्यापित • अपरिवर्तनीय",
+      your_records: "📊 आपके स्वास्थ्य रिकॉर्ड",
+      add_record: "➕ नया स्वास्थ्य रिकॉर्ड जोड़ें",
+      record_type: "रिकॉर्ड प्रकार:",
+      select_type: "प्रकार चुनें...",
+      symptom_report: "लक्षण रिपोर्ट",
+      consultation: "डॉक्टर परामर्श",
+      test_result: "परीक्षा परिणाम",
+      prescription: "नुस्खा",
+      vaccination: "टीकाकरण",
+      details: "विवरण:",
+      details_placeholder: "स्वास्थ्य रिकॉर्ड विवरण दर्ज करें...",
+      add_to_blockchain: "🔗 ब्लॉकचेन में जोड़ें",
+      blockchain_verification: "🔗 ब्लॉकचेन सत्यापन",
+      blockchain_desc: "आपके स्वास्थ्य रिकॉर्ड एक अपरिवर्तनीय ब्लॉकचेन में सुरक्षित हैं:",
+      blockchain_footer: "प्रत्येक ब्लॉक में क्रिप्टोग्राफिक सत्यापन के साथ एन्क्रिप्टेड स्वास्थ्य डेटा होता है"
+    },
+    "ta-IN": {
+      home: "🏠 முகப்பு",
+      alerts: "🚨 எச்சரிக்கைகள்",
+      settings: "⚙️ அமைப்புகள்",
+      brand_title: "ஹெல்த்சென்டினல்",
+      subtitle: "பிளாக்செயின் சுகாதார பதிவுகள்",
+      description: "பிளாக்செயின் தொழில்நுட்பத்தில் சேமிக்கப்பட்ட பாதுகாப்பான, மாற்றமுடியாத சுகாதார பதிவுகள்। உங்கள் சுகாதார தரவு என்க்ரிப்ட் செய்யப்பட்டு சரிபார்க்கப்பட்டுள்ளது।",
+      security_text: "பாதுகாப்பான • சரிபார்க்கப்பட்ட • மாற்றமுடியாத",
+      your_records: "📊 உங்கள் சுகாதார பதிவுகள்",
+      add_record: "➕ புதிய சுகாதார பதிவு சேர்க்கவும்",
+      record_type: "பதிவு வகை:",
+      select_type: "வகையைத் தேர்ந்தெடுக்கவும்...",
+      symptom_report: "அறிகுறி அறிக்கை",
+      consultation: "மருத்துவர் ஆலோசனை",
+      test_result: "சோதனை முடிவு",
+      prescription: "மருந்து பரிந்துரை",
+      vaccination: "தடுப்பூசி",
+      details: "விவரங்கள்:",
+      details_placeholder: "சுகாதார பதிவு விவரங்களை உள்ளிடவும்...",
+      add_to_blockchain: "🔗 பிளாக்செயினில் சேர்க்கவும்",
+      blockchain_verification: "🔗 பிளாக்செயின் சரிபார்ப்பு",
+      blockchain_desc: "உங்கள் சுகாதார பதிவுகள் மாற்றமுடியாத பிளாக்செயினில் பாதுகாக்கப்பட்டுள்ளன:",
+      blockchain_footer: "ஒவ்வொரு பிளாக்கிலும் க்ரிப்டோகிராஃபிக் சரிபார்ப்புடன் என்க்ரிப்ட் செய்யப்பட்ட சுகாதார தரவு உள்ளது"
+    },
+    "as-IN": {
+      home: "🏠 ঘৰ",
+      alerts: "🚨 সতৰ্কবাণী",
+      settings: "⚙️ ছেটিংসমূহ",
+      brand_title: "হেল্থচেণ্টিনেল",
+      subtitle: "ব্লকচেইন স্বাস্থ্য ৰেকৰ্ড",
+      description: "ব্লকচেইন প্ৰযুক্তিত সংৰক্ষিত সুৰক্ষিত, ছেৰাচেৰি-প্ৰমাণ স্বাস্থ্য ৰেকৰ্ড। আপোনাৰ স্বাস্থ্য ডেটা এনক্ৰিপ্ট আৰু সত্যাপিত।",
+      security_text: "সুৰক্ষিত • সত্যাপিত • অপৰিৱৰ্তনীয়",
+      your_records: "📊 আপোনাৰ স্বাস্থ্য ৰেকৰ্ড",
+      add_record: "➕ নতুন স্বাস্থ্য ৰেকৰ্ড যোগ কৰক",
+      record_type: "ৰেকৰ্ডৰ প্ৰকাৰ:",
+      select_type: "প্ৰকাৰ বাছক...",
+      symptom_report: "লক্ষণ প্ৰতিবেদন",
+      consultation: "চিকিৎসক পৰামৰ্শ",
+      test_result: "পৰীক্ষাৰ ফলাফল",
+      prescription: "প্ৰেছক্ৰিপচন",
+      vaccination: "টিকাকৰণ",
+      details: "বিৱৰণ:",
+      details_placeholder: "স্বাস্থ্য ৰেকৰ্ডৰ বিৱৰণ লিখক...",
+      add_to_blockchain: "🔗 ব্লকচেইনত যোগ কৰক",
+      blockchain_verification: "🔗 ব্লকচেইন সত্যাপন",
+      blockchain_desc: "আপোনাৰ স্বাস্থ্য ৰেকৰ্ডসমূহ এটা অপৰিৱৰ্তনীয় ব্লকচেইনত সুৰক্ষিত:",
+      blockchain_footer: "প্ৰতিটো ব্লকত ক্ৰিপ্টোগ্ৰাফিক সত্যাপনৰ সৈতে এনক্ৰিপ্ট কৰা স্বাস্থ্য ডেটা আছে"
+    },
+    "bn-IN": {
+      home: "🏠 হোম",
+      alerts: "🚨 সতর্কতা",
+      settings: "⚙️ সেটিংস",
+      brand_title: "হেল্থসেন্টিনেল",
+      subtitle: "ব্লকচেইন স্বাস্থ্য রেকর্ড",
+      description: "ব্লকচেইন প্রযুক্তিতে সংরক্ষিত নিরাপদ, ছেড়াছেড়ি-প্রমাণ স্বাস্থ্য রেকর্ড। আপনার স্বাস্থ্য ডেটা এনক্রিপ্ট এবং যাচাই করা।",
+      security_text: "নিরাপদ • যাচাইকৃত • অপরিবর্তনীয়",
+      your_records: "📊 আপনার স্বাস্থ্য রেকর্ড",
+      add_record: "➕ নতুন স্বাস্থ্য রেকর্ড যোগ করুন",
+      record_type: "রেকর্ডের ধরন:",
+      select_type: "ধরন নির্বাচন করুন...",
+      symptom_report: "লক্ষণ প্রতিবেদন",
+      consultation: "ডাক্তার পরামর্শ",
+      test_result: "পরীক্ষার ফলাফল",
+      prescription: "প্রেসক্রিপশন",
+      vaccination: "টিকাদান",
+      details: "বিবরণ:",
+      details_placeholder: "স্বাস্থ্য রেকর্ডের বিবরণ লিখুন...",
+      add_to_blockchain: "🔗 ব্লকচেইনে যোগ করুন",
+      blockchain_verification: "🔗 ব্লকচেইন যাচাইকরণ",
+      blockchain_desc: "আপনার স্বাস্থ্য রেকর্ডগুলি একটি অপরিবর্তনীয় ব্লকচেইনে সুরক্ষিত:",
+      blockchain_footer: "প্রতিটি ব্লকে ক্রিপ্টোগ্রাফিক যাচাইকরণের সাথে এনক্রিপ্ট করা স্বাস্থ্য ডেটা রয়েছে"
+    }
+  };
+  
+  function updateLanguage(lang) {
+    document.querySelectorAll('[data-text]').forEach(element => {
+      const textKey = element.getAttribute('data-text');
+      if (texts[lang] && texts[lang][textKey]) {
+        element.textContent = texts[lang][textKey];
+      }
+    });
+    
+    // Update placeholder text
+    const detailsInput = document.getElementById('recordDetails');
+    if (detailsInput && texts[lang]['details_placeholder']) {
+      detailsInput.placeholder = texts[lang]['details_placeholder'];
+    }
+    
+    // Update select options
+    const selectOptions = document.querySelectorAll('#recordType option');
+    if (selectOptions.length > 0 && texts[lang]) {
+      selectOptions[0].textContent = texts[lang]['select_type'] || 'Select type...';
+      selectOptions[1].textContent = texts[lang]['symptom_report'] || 'Symptom Report';
+      selectOptions[2].textContent = texts[lang]['consultation'] || 'Doctor Consultation';
+      selectOptions[3].textContent = texts[lang]['test_result'] || 'Test Result';
+      selectOptions[4].textContent = texts[lang]['prescription'] || 'Prescription';
+      selectOptions[5].textContent = texts[lang]['vaccination'] || 'Vaccination';
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('selectedLang', lang);
+  }
+  
+  // Initialize saved language
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  const langNames = {
+    'en-IN': 'English',
+    'hi-IN': 'हिंदी', 
+    'ta-IN': 'தமிழ்',
+    'as-IN': 'অসমীয়া',
+    'bn-IN': 'বাংলা'
+  };
+  document.getElementById('selectedLang').textContent = langNames[savedLang];
+  updateLanguage(savedLang);
+  
+  // Language dropdown functionality
+  const langSelect = document.getElementById('langSelect');
+  const langOptions = document.getElementById('langOptions');
+  
+  langSelect.addEventListener('click', function(e) {
+    e.stopPropagation();
+    langOptions.classList.toggle('show');
+  });
+  
+  document.addEventListener('click', function() {
+    langOptions.classList.remove('show');
+  });
+  
+  // Language option selection
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const selectedLang = this.dataset.lang;
+      document.getElementById('selectedLang').textContent = langNames[selectedLang];
+      updateLanguage(selectedLang);
+      langOptions.classList.remove('show');
+    });
+  });
+
+  // Form submission
+  document.getElementById('recordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    addNewRecord();
+  });
+  
+  // Settings button
+  document.getElementById('settingsBtn').addEventListener('click', function() {
+    alert('Settings panel would open here');
+  });
+  
+  // Initialize data
+  initializeRecords();
+  renderRecords();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSentinel - Community Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --shadow:rgba(11,22,36,0.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;scroll-behavior:smooth;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);border-bottom:4px solid var(--accent);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);border:1px solid #fff;}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.settings-btn{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.settings-btn:active{transform:translateY(1px);border:1px solid #fff;}
+.lang-toggle{display:flex;gap:6px;align-items:center;background: rgba(255,255,255,0.06);padding:6px;border-radius:12px;}
+.lang-toggle button{background:transparent;color:#fff;border:none;padding:6px 12px;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.lang-toggle button.active{background:#fff;color:var(--nav-end);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+main{max-width:1200px;margin:18px auto;padding:12px;}
+.hero{background: linear-gradient(135deg,#e6fff6 0%, #f0f8ff 100%);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center;box-shadow: 0 10px 30px var(--shadow);margin-bottom:18px;}
+.hero .left{flex:1;}
+.brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:32px;margin:0 0 6px 0;}
+.subtitle{font-size:16px;color:var(--muted);margin:0 0 12px 0;}
+.hero p{margin:0;color:#2f4858;font-weight:600;font-size:14.5px;}
+.section-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);margin:8px 0 18px 0;font-size:20px;}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:800px;margin:0 auto;}
+.dashboard-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(8,30,45,0.06);display:flex;flex-direction:column;gap:10px;}
+.chart-container{min-height:200px;}
+.summary-stats{display:flex;gap:16px;flex-wrap:wrap;}
+.stat{background:var(--card);border-radius:8px;padding:12px;min-width:120px;text-align:center;}
+.stat-value{font-size:24px;font-weight:800;color:var(--nav-end);}
+.stat-label{font-size:12px;color:#545b60;}
+@media (max-width:680px){nav{padding:10px 12px;gap:10px}.nav-left a{font-size:14px;padding:6px 6px}.tools{width:100%;justify-content:flex-end;margin-top:8px}.hero{flex-direction:column;align-items:flex-start}.content-grid{display:flex;flex-direction:column;gap:12px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html">Home</a>
+    <a href="#alerts" onclick="window.location.href='HealthSentinel.html#alerts'">Alerts</a>
+  </div>
+  <div class="tools">
+    <div class="lang-toggle" title="Quick language">
+      <button class="lang-btn active" data-lang="en-IN">EN</button>
+      <button class="lang-btn" data-lang="hi-IN">HI</button>
+      <button class="lang-btn" data-lang="ta-IN">TA</button>
+      <button class="lang-btn" data-lang="as-IN">AS</button>
+      <button class="lang-btn" data-lang="bn-IN">BN</button>
+    </div>
+    <button class="settings-btn" id="settingsBtn">⚙️ Settings</button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="left">
+      <h1 class="brand" data-text="brand">HealthSentinel</h1>
+      <p class="subtitle">Community Health Dashboard</p>
+      <p data-text="cd_hero_desc">View community health data, reports, and outbreak status with charts and summary statistics.</p>
+    </div>
+    <div style="width:220px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">📊</div>
+      <div style="font-weight:700;color:var(--success)">Data Insights</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title" data-text="cd_title">Community Health Dashboard</h2>
+    <div class="summary-stats">
+      <div class="stat">
+        <div class="stat-value">127</div>
+        <div class="stat-label" data-text="cd_total_reports">Total Reports</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">15</div>
+        <div class="stat-label" data-text="cd_active_cases">Active Outbreaks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">8</div>
+        <div class="stat-label" data-text="cd_water_alerts">Water Alerts</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">95%</div>
+        <div class="stat-label" data-text="cd_compliance">Hygiene Compliance</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div class="dashboard-card">
+        <h3 data-text="cd_heatmap">Outbreak Heatmap</h3>
+        <div class="chart-container">
+          <canvas id="heatmapChart"></canvas>
+          <p>Basic heatmap placeholder (red = high risk areas)</p>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <h3 data-text="cd_case_trends">Case Trends (Last Month)</h3>
+        <div class="chart-container">
+          <canvas id="trendsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-card">
+      <h3 data-text="cd_disease_breakdown">Disease Breakdown</h3>
+      <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+function updateLanguage(lang) {
+  document.querySelectorAll('[data-text]').forEach(element => {
+    const textKey = element.getAttribute('data-text');
+    if (texts[lang] && texts[lang][textKey]) {
+      element.textContent = texts[lang][textKey];
+    }
+  });
+}
+
+const texts = {
+  "en-IN": {
+    brand: "HealthSentinel",
+    cd_hero_desc: "View community health data, reports, and outbreak status with charts and summary statistics.",
+    cd_title: "Community Health Dashboard",
+    cd_total_reports: "Total Reports",
+    cd_active_cases: "Active Outbreaks",
+    cd_water_alerts: "Water Alerts",
+    cd_compliance: "Hygiene Compliance",
+    cd_heatmap: "Outbreak Heatmap",
+    cd_case_trends: "Case Trends (Last Month)",
+    cd_disease_breakdown: "Disease Breakdown"
+  },
+  "hi-IN": {
+    brand: "हेल्थसेंटिनल",
+    cd_hero_desc: "चार्ट और सारांश आँकड़ों के साथ सामुदायिक स्वास्थ्य डेटा, रिपोर्ट और प्रकोप स्थिति देखें।",
+    cd_title: "सामुदायिक स्वास्थ्य डैशबोर्ड",
+    cd_total_reports: "कुल रिपोर्ट",
+    cd_active_cases: "सक्रिय प्रकोप",
+    cd_water_alerts: "जल अलर्ट",
+    cd_compliance: "स्वच्छता अनुपालन",
+    cd_heatmap: "प्रकोप हीटमैप",
+    cd_case_trends: "केस ट्रेंड (अंतिम महीना)",
+    cd_disease_breakdown: "रोग ब्रेकडाउन"
+  },
+  "ta-IN": {
+    brand: "ஹெல்த்சென்டினல்",
+    cd_hero_desc: "வேடியம மற்றும் சுருக்க எண்கள் மூலம் சமூக சுகாதார தரவு, அறிக்கைகள் மற்றும் தொற்று நிலைகளை காண்க.",
+    cd_title: "சமூக சுகாதார டாஷ்போர்டு",
+    cd_total_reports: "மொத்த அறிக்கைகள்",
+    cd_active_cases: "செயல்பாட்டுத் செயல்தொற்றுகள்",
+    cd_water_alerts: "நீர் எச்சரிக்கைகள்",
+    cd_compliance: "சுகாதார நிர்ணயம்",
+    cd_heatmap: "தொற்று வெப்ப வரைபடம்",
+    cd_case_trends: "நிகழ்வுகள் போக்கு (கடைசி மாதம்)",
+    cd_disease_breakdown: "நோய் பிரச்சினை"
+  },
+  "as-IN": {
+    brand: "હેલ્થસெન்டિનેல",
+    cd_hero_desc: "চাৰ্ট আৰু সংক্ষিপ্ত তথ্যসহ কমিউনিটি স্বাস্থ্য ডেটা, ৰিপ'ৰ্ট আৰু মহামাৰীৰ দৰ্শন দেখক।",
+    cd_title: "কমিউনিটি হেলথ ডেশ্ব'ৰ্ড",
+    cd_total_reports: "মোট ৰিপ'ৰ্ট",
+    cd_active_cases: "বেয়া গৈ থকা মহামাৰী",
+    cd_water_alerts: "পানী সতৰ্কতা",
+    cd_compliance: "স্বাস্থ্যবিধি अনुপালन",
+    cd_heatmap: "মহামাৰী হিটমেপ",
+    cd_case_trends: "ঘটনা প্ৰবণতা (অন্তিম মাহ)",
+    cd_disease_breakdown: "চিকিৎসা ব্রেকডাউন"
+  },
+  "bn-IN": {
+    brand: "হেলথসেনটিনেল",
+    cd_hero_desc: "চার্ট এবং সংক্ষিপ্ত পরিসংখ্যান সহ কমিউনিটি স্বাস্থ্য ডেটা, রিপোর্ট এবং প্রাদুর্ভাবের অবস্থা দেখুন.",
+    cd_title: "কমিউনিটি হেলথ ড্যাশবোর্ড",
+    cd_total_reports: "মোট রিপোর্ট",
+    cd_active_cases: "সক্রিয় প্রাদুর্ভাব",
+    cd_water_alerts: "জল সতর্কতা",
+    cd_compliance: "স্বাস্থ্যবিদিি নির্ণয়",
+    cd_heatmap: "প্রাদুর্ভাব হিটম্যাপ",
+    cd_case_trends: "মামলা প্রবণতা (শেষ মাস)",
+    cd_disease_breakdown: "রোগ বিভাজন"
+  }
+};
+
+// Initialize charts and functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize saved language
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  updateLanguage(savedLang);
+  
+  // Update active language button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.lang === savedLang) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Language switching
+  document.querySelectorAll('.lang-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const lang = this.getAttribute('data-lang');
+      updateLanguage(lang);
+      localStorage.setItem('selectedLang', lang);
+      
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Create heatmap placeholder
+  const heatmapCtx = document.getElementById('heatmapChart').getContext('2d');
+  new Chart(heatmapCtx, {
+    type: 'bar',
+    data: { labels: ['Village A', 'Village B', 'Zone C'], values: [5, 10, 3] },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  // Trends chart
+  const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+  new Chart(trendsCtx, {
+    type: 'line',
+    data: {
+      labels: Array.from({length:10}, (_,i) => i+1),
+      datasets: [{ label: 'Cases', data: [1,2,3,5,4,6,8,7,9,10], borderColor: '#ff9800' }]
+    }
+  });
+
+  // Pie chart
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Cholera', 'Typhoid', 'Diarrhea'],
+      datasets: [{ data: [30, 20, 50], backgroundColor: ['#ff5722', '#8bc34a', '#03a9f4'] }]
+    }
+  });
+});
+</script>
+
+</body>
+</html>

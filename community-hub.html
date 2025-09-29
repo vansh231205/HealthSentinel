@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Hub - HealthSentinel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --shadow:rgba(11,22,36,0.08);
+  --danger:#d32f2f;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.lang-dropdown{position:relative;display:inline-block;}
+.lang-select{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;min-width:120px;}
+.lang-select:hover{background: rgba(255,255,255,0.18);}
+.lang-options{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);min-width:180px;z-index:1300;margin-top:4px;}
+.lang-options.show{display:block;}
+.lang-option{display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--muted);cursor:pointer;border-bottom:1px solid #f0f0f0;}
+.lang-option:hover{background:#f8f9fa;}
+.lang-option:last-child{border-bottom:none;}
+.lang-flag{font-size:16px;}
+main{max-width:1200px;margin:20px auto;padding:20px;}
+.page-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:28px;margin-bottom:20px;text-align:center;}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:30px;}
+.hub-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 20px var(--shadow);cursor:pointer;transition:transform 0.2s;border-top:4px solid transparent;}
+.hub-card:hover{transform:translateY(-4px);}
+.hub-card h3{margin-top:0;font-family:'Montserrat',sans-serif;font-weight:700;}
+.hub-icon{font-size:48px;text-align:center;margin-bottom:16px;}
+.btn{padding:12px 20px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;margin-top:12px;width:100%;}
+.btn-primary{background:var(--nav-end);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-warning{background:var(--accent);color:#fff;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px;}
+.stat-card{background:var(--card);padding:16px;border-radius:8px;text-align:center;box-shadow:0 4px 12px var(--shadow);}
+.stat-number{font-size:24px;font-weight:900;color:var(--nav-end);}
+.accent-blue{border-top-color:#410edb;}
+.accent-green{border-top-color:#0bd976;}
+.accent-orange{border-top-color:#ff9800;}
+.accent-purple{border-top-color:#ae3cff;}
+.accent-red{border-top-color:#d32f2f;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html" data-text="nav_back">← Back to Home</a>
+    <a href="#community" data-text="nav_community">Community</a>
+    <a href="#analytics" data-text="nav_analytics">Analytics</a>
+    <a href="#reports" data-text="nav_reports">Reports</a>
+  </div>
+  <div class="tools">
+    <div class="lang-dropdown">
+      <button class="lang-select" id="langSelect">
+        <span class="lang-flag">🇮🇳</span>
+        <span id="selectedLang">English</span>
+        <span>▼</span>
+      </button>
+      <div class="lang-options" id="langOptions">
+        <div class="lang-option" data-lang="en-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>English (India)</span>
+        </div>
+        <div class="lang-option" data-lang="hi-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>हिंदी (Hindi)</span>
+        </div>
+        <div class="lang-option" data-lang="ta-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>தமிழ் (Tamil)</span>
+        </div>
+        <div class="lang-option" data-lang="as-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>অসমীয়া (Assamese)</span>
+        </div>
+        <div class="lang-option" data-lang="bn-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>বাংলা (Bengali)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <h1 class="page-title" data-text="hub_title">🏘️ Community Health Hub</h1>
+  
+  <!-- Community Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">1,247</div>
+      <div data-text="hub_active_users">Active Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">15</div>
+      <div data-text="hub_active_alerts">Active Alerts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">98%</div>
+      <div data-text="hub_water_safety">Water Safety</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">24/7</div>
+      <div data-text="hub_monitoring">Monitoring</div>
+    </div>
+  </div>
+  
+  <!-- Main Hub Features -->
+  <div class="hub-grid">
+    
+    <!-- Community Dashboard -->
+    <div class="hub-card accent-blue" onclick="navigateTo('community-dashboard.html')">
+      <div class="hub-icon">📊</div>
+      <h3>Community Health Dashboard</h3>
+      <p>View real-time health data, trends, and analytics for your community. Track disease patterns and prevention efforts.</p>
+      <button class="btn btn-primary">View Dashboard</button>
+    </div>
+    
+    <!-- Crowdsourced Reporting -->
+    <div class="hub-card accent-green" onclick="navigateTo('crowdsourced-reporting.html')">
+      <div class="hub-icon">🤝</div>
+      <h3>Community Reporting</h3>
+      <p>Report health issues, water quality problems, and contribute to community health monitoring efforts.</p>
+      <button class="btn btn-success">Submit Report</button>
+    </div>
+    
+    <!-- Outbreak Prediction -->
+    <div class="hub-card accent-orange" onclick="navigateTo('outbreak-prediction.html')">
+      <div class="hub-icon">🎯</div>
+      <h3>Outbreak Prediction</h3>
+      <p>AI-powered early warning system that predicts potential disease outbreaks based on community data patterns.</p>
+      <button class="btn btn-warning">View Predictions</button>
+    </div>
+    
+    <!-- Risk Assessment -->
+    <div class="hub-card accent-purple" onclick="navigateTo('risk-alerts.html')">
+      <div class="hub-icon">⚠️</div>
+      <h3>Risk Assessment</h3>
+      <p>Get personalized risk scores and alerts for your area. Monitor high-risk zones and safety recommendations.</p>
+      <button class="btn btn-primary">Check Risk Level</button>
+    </div>
+    
+    <!-- Blockchain Health Records -->
+    <div class="hub-card accent-red" onclick="navigateTo('blockchain-health-records.html')">
+      <div class="hub-icon">🔗</div>
+      <h3>Health Records</h3>
+      <p>Secure, blockchain-based health records system. Access your medical history and share with healthcare providers.</p>
+      <button class="btn btn-primary">Access Records</button>
+    </div>
+    
+    <!-- Water Quality Monitoring -->
+    <div class="hub-card accent-blue" onclick="navigateTo('water-quality-monitoring.html')">
+      <div class="hub-icon">💧</div>
+      <h3>Water Quality Network</h3>
+      <p>Monitor water quality from IoT sensors across the community. Real-time data and contamination alerts.</p>
+      <button class="btn btn-primary">Monitor Water</button>
+    </div>
+    
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="hub-card" style="max-width:600px;margin:0 auto;">
+    <h3>🚀 Quick Community Actions</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+      <button class="btn btn-success" onclick="reportIssue()">📝 Report Issue</button>
+      <button class="btn btn-primary" onclick="viewAlerts()">🚨 View Alerts</button>
+      <button class="btn btn-warning" onclick="shareData()">📤 Share Data</button>
+      <button class="btn btn-primary" onclick="contactAdmin()">📞 Contact Admin</button>
+    </div>
+  </div>
+  
+</main>
+
+<script>
+// Basic language support
+const hubTexts = {
+  "en-IN": {
+    nav_back: "← Back to Home", nav_community: "Community", nav_analytics: "Analytics", nav_reports: "Reports",
+    hub_title: "🏘️ Community Health Hub", hub_active_users: "Active Users", hub_active_alerts: "Active Alerts",
+    hub_water_safety: "Water Safety", hub_monitoring: "Monitoring"
+  },
+  "hi-IN": {
+    nav_back: "← होम पर वापस", nav_community: "समुदाय", nav_analytics: "विश्लेषण", nav_reports: "रिपोर्ट",
+    hub_title: "🏘️ सामुदायिक स्वास्थ्य हब", hub_active_users: "सक्रिय उपयोगकर्ता", hub_active_alerts: "सक्रिय अलर्ट",
+    hub_water_safety: "जल सुरक्षा", hub_monitoring: "निगरानी"
+  },
+  "ta-IN": {
+    nav_back: "← முகப்புக்கு திரும்பு", nav_community: "சமுதாயம்", nav_analytics: "பகுப்பாய்வு", nav_reports: "அறிக்கைகள்",
+    hub_title: "🏘️ சமுதாய சுகாதார மையம்", hub_active_users: "செயல்படு பயனர்கள்", hub_active_alerts: "செயல்படு எச்சரிக்கைகள்",
+    hub_water_safety: "நீர் பாதுகாப்பு", hub_monitoring: "கண்காணிப்பு"
+  },
+  "as-IN": {
+    nav_back: "← ঘৰলৈ উভতি যাওক", nav_community: "সমুদায়", nav_analytics: "বিশ্লেষণ", nav_reports: "প্ৰতিবেদন",
+    hub_title: "🏘️ সমুদায়িক স্বাস্থ্য হাব", hub_active_users: "সক্ৰিয় ব্যৱহাৰকাৰী", hub_active_alerts: "সক্ৰিয় সতৰ্কবাণী",
+    hub_water_safety: "পানীৰ সুৰক্ষা", hub_monitoring: "নিৰীক্ষণ"
+  },
+  "bn-IN": {
+    nav_back: "← হোমে ফিরে যান", nav_community: "কমিউনিটি", nav_analytics: "বিশ্লেষণ", nav_reports: "প্রতিবেদন",
+    hub_title: "🏘️ কমিউনিটি হেলথ হাব", hub_active_users: "সক্রিয় ব্যবহারকারী", hub_active_alerts: "সক্রিয় অ্যালার্ট",
+    hub_water_safety: "জলের নিরাপত্তা", hub_monitoring: "মনিটরিং"
+  }
+};
+
+function updateLanguage(lang) {
+  document.querySelectorAll('[data-text]').forEach(element => {
+    const textKey = element.getAttribute('data-text');
+    if (hubTexts[lang] && hubTexts[lang][textKey]) {
+      element.textContent = hubTexts[lang][textKey];
+    }
+  });
+  const langNames = {'en-IN': 'English', 'hi-IN': 'हिंदी', 'ta-IN': 'தமிழ்', 'as-IN': 'অসমীয়া', 'bn-IN': 'বাংলা'};
+  document.getElementById('selectedLang').textContent = langNames[lang];
+  localStorage.setItem('selectedLang', lang);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  updateLanguage(savedLang);
+  
+  const langSelect = document.getElementById('langSelect');
+  const langOptions = document.getElementById('langOptions');
+  langSelect.addEventListener('click', function(e) { e.stopPropagation(); langOptions.classList.toggle('show'); });
+  document.addEventListener('click', function() { langOptions.classList.remove('show'); });
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', function() {
+      updateLanguage(this.dataset.lang);
+      langOptions.classList.remove('show');
+    });
+  });
+});
+
+function navigateTo(page) {
+  console.log('Navigating to:', page);
+  window.location.href = page;
+}
+
+function reportIssue() {
+  const issueType = prompt('What would you like to report?\n\n1. Water quality issue\n2. Health emergency\n3. Disease symptoms\n4. Equipment malfunction\n\nEnter number (1-4):');
+  
+  switch(issueType) {
+    case '1':
+      window.location.href = 'crowdsourced-reporting.html';
+      break;
+    case '2':
+      window.location.href = 'emergency-alerts.html';
+      break;
+    case '3':
+      window.location.href = 'HealthSentinel.html#features';
+      break;
+    case '4':
+      alert('Equipment malfunction reported. Technical team will be notified.\n\nReport ID: #' + Math.random().toString(36).substr(2, 9).toUpperCase());
+      break;
+    default:
+      alert('Please select a valid option (1-4)');
+  }
+}
+
+function viewAlerts() {
+  window.location.href = 'emergency-alerts.html';
+}
+
+function shareData() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'HealthSentinel Community Data',
+      text: 'Check out our community health monitoring system',
+      url: window.location.origin + '/HealthSentinel.html',
+    });
+  } else {
+    const shareText = `Check out HealthSentinel - Community Health Monitoring System\n${window.location.origin}/HealthSentinel.html`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText);
+      alert('Community link copied to clipboard!');
+    } else {
+      alert(`Share this link:\n\n${shareText}`);
+    }
+  }
+}
+
+function contactAdmin() {
+  const adminOptions = confirm('Contact Community Health Administrator?\n\nOK = Call\nCancel = Send Message');
+  
+  if (adminOptions) {
+    window.location.href = 'tel:+91-9876543210';
+  } else {
+    alert('Message template:\n\n"Hello, I need assistance with the HealthSentinel community health monitoring system. Please contact me regarding [your issue here]."\n\nSend to: admin@healthsentinel.in');
+  }
+}
+
+// Auto-update community stats
+function updateStats() {
+  // Simulate real-time stats updates
+  const statNumbers = document.querySelectorAll('.stat-number');
+  statNumbers[0].textContent = Math.floor(Math.random() * 100) + 1200; // Active users
+  statNumbers[1].textContent = Math.floor(Math.random() * 10) + 10;    // Active alerts
+  statNumbers[2].textContent = (97 + Math.random() * 2).toFixed(1) + '%'; // Water safety
+}
+
+// Update stats every 30 seconds
+setInterval(updateStats, 30000);
+
+// Show community notification on load
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    if (Math.random() > 0.7) { // 30% chance
+      alert('🏘️ Community Update: New water quality sensors installed in 2 additional locations. Enhanced monitoring now available!');
+    }
+  }, 2000);
+});
+</script>
+
+</body>
+</html>

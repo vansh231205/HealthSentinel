@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSentinel - Risk Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --danger:#d32f2f;
+  --shadow:rgba(11,22,36,0.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;scroll-behavior:smooth;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);border-bottom:4px solid var(--danger);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);border:1px solid #fff;}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.settings-btn{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.settings-btn:active{transform:translateY(1px);border:1px solid #fff;}
+.lang-toggle{display:flex;gap:6px;align-items:center;background: rgba(255,255,255,0.06);padding:6px;border-radius:12px;}
+.lang-toggle button{background:transparent;color:#fff;border:none;padding:6px 12px;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.lang-toggle button.active{background:#fff;color:var(--nav-end);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+main{max-width:1200px;margin:18px auto;padding:12px;}
+.hero{background: linear-gradient(135deg,#fff8e1 0%, #ffebee 100%);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center;box-shadow: 0 10px 30px var(--shadow);margin-bottom:18px;}
+.hero .left{flex:1;}
+.brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:32px;margin:0 0 6px 0;}
+.subtitle{font-size:16px;color:var(--muted);margin:0 0 12px 0;}
+.hero p{margin:0;color:#2f4858;font-weight:600;font-size:14.5px;}
+.hero .actions{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.cta{background:linear-gradient(90deg,var(--danger),var(--nav-end));color:#fff;border:none;padding:12px 16px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(144,0,0,0.12);}
+.cta:hover{border-color:#fff;}
+.secondary{background:#fff;color:var(--nav-end);padding:10px 14px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);font-weight:700;}
+.section-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);margin:8px 0 18px 0;font-size:20px;}
+.content-grid{display:grid;grid-template-columns:1fr;gap:16px;width:100%;max-width:800px;margin:0 auto;}
+.input-group{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(8,30,45,0.06);display:flex;flex-direction:column;gap:10px;}
+.alert-list{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(8,30,45,0.06);}
+.alert-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding:10px 0;}
+.alert-item:last-child{border-bottom:none;}
+.alert-text span{font-weight:600;}
+.risk-level{float:left;width:60px;text-align:center;padding:4px;border-radius:8px;font-size:12px;font-weight:800;}
+.high{background:#ff5722;color:#fff;}
+.medium{background:#ff9800;color:#fff;}
+.low{background:#4caf50;color:#fff;}
+.input-group .emoji{font-size:36px;margin:0;text-align:center;}
+.input-desc{color:#545b60;font-size:14px;margin:0;}
+.feature-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.feature-actions button{padding:10px 14px;border-radius:10px;border:none;font-weight:800;cursor:pointer;}
+.green-btn{background:var(--success);color:#fff;}
+.custom-input{width:100%;padding:10px 14px;border-radius:12px;border:2px solid var(--nav-end);font-size:14px;transition:all 0.3s;}
+.custom-input:focus{outline:none;border-color:var(--accent);box-shadow:0 4px 12px rgba(255,183,3,0.2);}
+@media (max-width:680px){nav{padding:10px 12px;gap:10px}.nav-left a{font-size:14px;padding:6px 6px}.tools{width:100%;justify-content:flex-end;margin-top:8px}.hero{flex-direction:column;align-items:flex-start}.content-grid{display:flex;flex-direction:column;gap:12px}}
+
+.checkbox-group{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;}
+.checkbox-group label{font-size:14px;color:var(--muted);cursor:pointer;}
+.checkbox-group input[type="checkbox"]{margin-right:5px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html">Home</a>
+    <a href="#alerts" onclick="window.location.href='HealthSentinel.html#alerts'">Alerts</a>
+  </div>
+  <div class="tools">
+    <div class="lang-toggle" title="Quick language">
+      <button class="lang-btn active" data-lang="en-IN">EN</button>
+      <button class="lang-btn" data-lang="hi-IN">HI</button>
+      <button class="lang-btn" data-lang="ta-IN">TA</button>
+      <button class="lang-btn" data-lang="as-IN">AS</button>
+      <button class="lang-btn" data-lang="bn-IN">BN</button>
+    </div>
+    <button class="settings-btn" id="settingsBtn">⚙️ Settings</button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="left">
+      <h1 class="brand" data-text="brand">HealthSentinel</h1>
+      <p class="subtitle">Risk Assessment & Alert System</p>
+      <p data-text="ra_hero_desc">Get alerts for high-risk areas and personal risk levels. Manage your notification preferences.</p>
+    </div>
+    <div style="width:220px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">⚠️</div>
+      <div style="font-weight:700;color:var(--danger)">Stay Alert</div>
+    </div>
+  </section>
+
+  <section id="risk-content">
+    <h2 class="section-title" data-text="ra_title">Personal Risk Calculator</h2>
+    <div class="content-grid">
+      <div class="input-group">
+        <div class="emoji">🗺️</div>
+        <h3 data-text="ra_calc_title">Calculate Your Risk</h3>
+        <p class="input-desc" data-text="ra_calc_desc">Enter your location and symptoms to assess risk level.</p>
+        <input type="text" id="locationInput" class="custom-input" placeholder="Village/City">
+        <textarea id="symptomCalc" class="custom-input" rows="3" placeholder="Symptoms"></textarea>
+        <div class="feature-actions">
+          <button id="calcRiskBtn" class="cta" data-text="ra_calc_btn">Calculate Risk</button>
+        </div>
+        <p id="riskResult" style="display:none;font-weight:600;margin-top:10px;">Your estimated risk: <span id="riskScore">Low</span></p>
+      </div>
+
+      <div class="input-group">
+        <div class="emoji">🔔</div>
+        <h3 data-text="ra_alert_title">Alert Preferences</h3>
+        <p class="input-desc" data-text="ra_alert_desc">Choose how you want to receive alerts.</p>
+        <div class="checkbox-group">
+          <label><input type="checkbox" checked> SMS</label>
+          <label><input type="checkbox" checked> WhatsApp</label>
+          <label><input type="checkbox"> Email</label>
+          <label><input type="checkbox" checked> Push Notification</label>
+        </div>
+        <div class="feature-actions">
+          <button class="green-btn" onclick="alert('Preferences saved!')">Save Preferences</button>
+        </div>
+      </div>
+
+      <div class="alert-list">
+        <h3 data-text="ra_list_title">Recent Alerts</h3>
+        <div id="alertList">
+          <div class="alert-item">
+            <div class="alert-text"><span class="risk-level high">High</span> Water contamination in Zone A - Boil water</div>
+            <small>2 hours ago</small>
+          </div>
+          <div class="alert-item">
+            <div class="alert-text"><span class="risk-level medium">Medium</span> Increased diarrhea cases in your area</div>
+            <small>1 day ago</small>
+          </div>
+          <div class="alert-item">
+            <div class="alert-text"><span class="risk-level low">Low</span> Regular hygiene reminders</div>
+            <small>3 days ago</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const texts = {
+  "en-IN": {
+    brand: "HealthSentinel",
+    ra_hero_desc: "Get alerts for high-risk areas and personal risk levels. Manage your notification preferences.",
+    ra_title: "Personal Risk Calculator",
+    ra_calc_title: "Calculate Your Risk",
+    ra_calc_desc: "Enter your location and symptoms to assess risk level.",
+    ra_calc_btn: "Calculate Risk",
+    ra_alert_title: "Alert Preferences",
+    ra_alert_desc: "Choose how you want to receive alerts.",
+    ra_list_title: "Recent Alerts"
+  },
+  "hi-IN": {
+    brand: "हेल्थसेंटिनल",
+    ra_hero_desc: "उच्च-जोखिम क्षेत्रों और व्यक्तिगत जोखिम स्तर के लिए अलर्ट प्राप्त करें। अपनी अधिसूचना वरीयताओं का प्रबंधन करें।",
+    ra_title: "व्यक्तिगत जोखिम कैलकुलेटर",
+    ra_calc_title: "अपना जोखिम कैलकुलेट करें",
+    ra_calc_desc: "जोखिम स्तर का आकलन करने के लिए अपने स्थान और लक्षण दर्ज करें।",
+    ra_calc_btn: "जोखिम कैलकुलेट करें",
+    ra_alert_title: "अलर्ट वरीयताएँ",
+    ra_alert_desc: "चुनें कि आप अलर्ट कैसे प्राप्त करना चाहते हैं।",
+    ra_list_title: "हाल के अलर्ट"
+  },
+  "ta-IN": {
+    brand: "ஹெல்த்சென்டினல்",
+    ra_hero_desc: "உயர் ஆபத்தான பகுதிகள் மற்றும் தனிப்பட்ட ஆபத்து நிலைகளுக்கு எச்சரிக்கை பெறுங்கள். உங்கள் அறிவிப்பு விருப்பங்களை நிர்வகிக்கவும்.",
+    ra_title: "தனிப்பட்ட ஆபத்து கணக்கீடு",
+    ra_calc_title: "உங்கள் ஆபத்தை கணக்கிடுங்கள்",
+    ra_calc_desc: "ஆபத்து நிலையை மதிப்பிட உங்கள் இடம் மற்றும் அறிகுறிகளை உள்ளீடு செய்யவும்.",
+    ra_calc_btn: "ஆபத்தை கணக்கிடுங்கள்",
+    ra_alert_title: "எச்சரிக்கை விருப்பங்கள்",
+    ra_alert_desc: "நீங்கள் எச்சரிக்கையை எவ்வாறு பெற விரும்புகிறீர்கள் என்பதைத் தேர்ந்தெடுக்கவும்.",
+    ra_list_title: "சமீபத்திய எச்சரிக்கைகள்"
+  },
+  "as-IN": {
+    brand: "હેલ્થસっているん",
+    ra_hero_desc: "উচ্চ-ঝুঁকি অঞ্চল এবং ব্যক্তিগত ঝুঁকি স্তরের জন্য সতর্কতা লাভ করুন। আপোনার বিজ্ঞপ্তি পছন্দসমূহ ব্যবস্থাপনা করুন।",
+    ra_title: "ব্যক্তিগত ঝুঁকি ক্যালকুলেটর",
+    ra_calc_title: "আপোনার ঝুঁকি ক্যালকুলেট করুন",
+    ra_calc_desc: "ঝুঁকি স্তর মূল্যায়ন করিবলৈ আপোনার অবস্থান আৰু লক্ষণসমূহ প্ৰবিষ্ট করক।",
+    ra_calc_btn: "ঝুঁকি ক্যালকুলেট করুন",
+    ra_alert_title: "সতর্কতা পছন্দসমূহ",
+    ra_alert_desc: "আপুনি কেমনে সতর্কতা লাভ করিবলৈ চাহিব।",
+    ra_list_title: "সম্প্ৰতি সতর্কতা"
+  },
+  "bn-IN": {
+    brand: "হেলথসেনটিনেল",
+    ra_hero_desc: "উচ্চ-ঝুঁকিপূর্ণ অঞ্চল এবং ব্যক্তিগত ঝুঁকির স্তরের জন্য সতর্কতা পান। আপনার বিজ্ঞপ্তি পছন্দগুলি পরিচালনা করুন।",
+    ra_title: "ব্যক্তিগত ঝুঁকি ক্যালকুলেটর",
+    ra_calc_title: "আপনার ঝুঁকি গণনা করুন",
+    ra_calc_desc: "ঝুঁকি স্তর মূল্যায়ন করতে আপনার অবস্থান এবং লক্ষণগুলি লিখুন।",
+    ra_calc_btn: "ঝুঁকি গণনা করুন",
+    ra_alert_title: "সতর্কতা পছন্দ",
+    ra_alert_desc: "আপনি কীভাবে সতর্কতা পেতে চান তা বেছে নিন।",
+    ra_list_title: "সাম্প্রতিক সতর্কতা"
+  }
+};
+
+function calculateRisk() {
+  const location = document.getElementById('locationInput').value;
+  const symptoms = document.getElementById('symptomCalc').value;
+  const risks = ['Low', 'Medium', 'High'];
+  const randomRisk = risks[Math.floor(Math.random()*risks.length)];
+  document.getElementById('riskScore').textContent = randomRisk;
+  document.getElementById('riskResult').style.display = 'block';
+  alert(`Based on your location (${location}) and symptoms, your risk is ${randomRisk}. Alerts will be sent via selected methods.`);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const langButtons = document.querySelectorAll('.lang-btn');
+
+  // Get saved language or default
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+
+  // Set active button for saved language
+  langButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-lang') === savedLang) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Initial call to set content for the saved or default language
+  updateLanguage(savedLang);
+
+  langButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      langButtons.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const selectedLang = this.getAttribute('data-lang');
+      // Save to localStorage
+      localStorage.setItem('selectedLang', selectedLang);
+      document.querySelectorAll('[data-text]').forEach(element => {
+        const textKey = element.getAttribute('data-text');
+        if (texts[selectedLang] && texts[selectedLang][textKey]) {
+          element.textContent = texts[selectedLang][textKey];
+        }
+      });
+    });
+  });
+
+  document.getElementById('calcRiskBtn').addEventListener('click', calculateRisk);
+  document.getElementById('settingsBtn').addEventListener('click', function() {
+    alert('Settings panel would open here');
+  });
+});
+</script>
+
+</body>
+</html>

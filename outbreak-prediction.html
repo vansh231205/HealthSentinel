@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSentinel - Outbreak Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --danger:#d32f2f;
+  --shadow:rgba(11,22,36,0.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;scroll-behavior:smooth;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);border-bottom:4px solid #ffb703;}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);border:1px solid #fff;}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.settings-btn{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.settings-btn:active{transform:translateY(1px);border:1px solid #fff;}
+.lang-toggle{display:flex;gap:6px;align-items:center;background: rgba(255,255,255,0.06);padding:6px;border-radius:12px;}
+.lang-toggle button{background:transparent;color:#fff;border:none;padding:6px 12px;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.lang-toggle button.active{background:#fff;color:var(--nav-end);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+main{max-width:1200px;margin:18px auto;padding:12px;}
+.hero{background: linear-gradient(135deg,#fff8e1 0%, #ffebee 50%);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center;box-shadow: 0 10px 30px var(--shadow);margin-bottom:18px;}
+.hero .left{flex:1;}
+.brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:32px;margin:0 0 6px 0;}
+.subtitle{font-size:16px;color:var(--muted);margin:0 0 12px 0;}
+.hero p{margin:0;color:#2f4858;font-weight:600;font-size:14.5px;}
+.section-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);margin:8px 0 18px 0;font-size:20px;}
+.chart-container{background:var(--card);border-radius:12px;padding:16px;margin:0 auto;max-width:800px;min-height:400px;}
+.risk-legend{display:flex;gap:20px;justify-content:flex-start;padding:10px;}
+.legend-item{display:flex;align-items:center;gap:8px;}
+.legend-color{width:20px;height:20px;border-radius:2px;}
+.legend-text{font-size:14px;font-weight:600;}
+@media (max-width:680px){nav{padding:10px 12px;gap:10px}.nav-left a{font-size:14px;padding:6px 6px}.tools{width:100%;justify-content:flex-end;margin-top:8px}.hero{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="HealthSentinel.html">Home</a>
+    <a href="#alerts" onclick="window.location.href='HealthSentinel.html#alerts'">Alerts</a>
+  </div>
+  <div class="tools">
+    <div class="lang-toggle" title="Quick language">
+      <button class="lang-btn active" data-lang="en-IN">EN</button>
+      <button class="lang-btn" data-lang="hi-IN">HI</button>
+      <button class="lang-btn" data-lang="ta-IN">TA</button>
+      <button class="lang-btn" data-lang="as-IN">AS</button>
+      <button class="lang-btn" data-lang="bn-IN">BN</button>
+    </div>
+    <button class="settings-btn" id="settingsBtn">⚙️ Settings</button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="left">
+      <h1 class="brand" data-text="brand">HealthSentinel</h1>
+      <p class="subtitle">Early Outbreak Prediction</p>
+      <p data-text="op_hero_desc">AI-driven prediction of emerging disease hotspots and trends for next 7-30 days.</p>
+    </div>
+    <div style="width:220px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">🔮</div>
+      <div style="font-weight:700;color:var(--accent)">Predictive Analytics</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title" data-text="op_title">Outbreak Prediction Trends</h2>
+
+    <div class="risk-legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background:#ff5722;"></div>
+        <div class="legend-text" data-text="op_high_risk">High Risk</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#ff9800;"></div>
+        <div class="legend-text" data-text="op_medium_risk">Medium Risk</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#4caf50;"></div>
+        <div class="legend-text" data-text="op_low_risk">Low Risk</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="predictionChart"></canvas>
+    </div>
+
+    <p style="text-align:center;margin-top:10px;font-weight:600;" data-text="op_disclaimer">This is a simulated prediction based on historical data patterns. For actual health advice, consult local authorities.</p>
+  </section>
+</main>
+
+<script>
+function updateLanguage(lang) {
+  document.querySelectorAll('[data-text]').forEach(element => {
+    const textKey = element.getAttribute('data-text');
+    if (texts[lang] && texts[lang][textKey]) {
+      element.textContent = texts[lang][textKey];
+    }
+  });
+}
+
+const texts = {
+  "en-IN": {
+    brand: "HealthSentinel",
+    op_hero_desc: "AI-driven prediction of emerging disease hotspots and trends for next 7-30 days.",
+    op_title: "Outbreak Prediction Trends",
+    op_high_risk: "High Risk",
+    op_medium_risk: "Medium Risk",
+    op_low_risk: "Low Risk",
+    op_disclaimer: "This is a simulated prediction based on historical data patterns. For actual health advice, consult local authorities."
+  },
+  "hi-IN": {
+    brand: "हेल्थसेंटिनल",
+    op_hero_desc: "अगले 7-30 दिनों के लिए उभरते रोग हॉटस्पॉट और रुझानों की एआई चालित पूर्वानुमान।",
+    op_title: "प्रकोप पूर्वानुमान प्रवृत्तियाँ",
+    op_high_risk: "उच्च जोखिम",
+    op_medium_risk: "मध्यम जोखिम",
+    op_low_risk: "कम जोखिम",
+    op_disclaimer: "यह ऐतिहासिक डेटा पैटर्न के आधार पर अनुकरण पूर्वानुमान है। वास्तविक स्वास्थ्य सलाह के लिए स्थानीय अधिकारियों से संपर्क करें।"
+  },
+  "ta-IN": {
+    brand: "ஹெல்த்சென்டினல்",
+    op_hero_desc: "அடுத்த 7-30 நாட்களில் எழுச்சியும் நோய் ஹாட்ஸ்பாட்கள் மற்றும் போக்குகளை ஏஐ மூலம் கணிக்கிறது.",
+    op_title: "தொற்று கணிப்பு போக்குகள்",
+    op_high_risk: "அதிக ஆபத்து",
+    op_medium_risk: "நடுத்தர ஆபத்து",
+    op_low_risk: "குறைந்த ஆபத்து",
+    op_disclaimer: "இது வரலாற்று தரவு வடிவங்களை அடிப்படையாகக் கொண்ட ஒரு பயிற்சி கணிப்பு. உண்மையான சுகாதார ஆலோசனைக்கு உள்ளூர் அதிகாரிகளை அணுகுங்கள்."
+  },
+  "as-IN": {
+    brand: "હેલ્થસெન்டિનેલ",
+    op_hero_desc: "আগতীয়া ৰোগৰ হটস্পট আৰু প্ৰবণতাৰ AI চালিত ভৱিষ্যদ্বাণী 7-30 দিনৰ বাবে।",
+    op_title: "মহামাৰী ভৱিষ্যদ্বাণী প্ৰবণতা",
+    op_high_risk: "উচ্চ ঝুঁকি",
+    op_medium_risk: "মধ্যম ঝুঁকি",
+    op_low_risk: "কম ঝুঁকি",
+    op_disclaimer: "এইটো ঐতিহাসিক ডেটা পেটাৰ্নৰ ভিত্তিত এক অনুকৰণ ভৱিষ্যদ্বাণী। বাস্তৱ স্বাস্থ্য পৰামৰ্শৰ বাবে স্থানীয় কর্তৃপক্ষৰ সৈতে যোগাযোগ কৰক।"
+  },
+  "bn-IN": {
+    brand: "হেলথসেনটিনেল",
+    op_hero_desc: "পরবর্তী 7-30 দিনের জন্য ভাবী রোগ হটস্পট এবং ট্রেন্ডের AI-চালিত ভবিষ্যদ্বাণী।",
+    op_title: "ব্রেকআউট প্রেডিকশন ট্রেন্ড",
+    op_high_risk: "উচ্চ ঝুঁকি",
+    op_medium_risk: "মাঝারি ঝুঁকি",
+    op_low_risk: "নিম্ন ঝুঁকি",
+    op_disclaimer: "এটি ঐতিহাসিক ডেটা প্যাটার্নের ভিত্তিতে একটি মূলন প্রেডিকশন। প্রকৃত স্বাস্থ্য পরামর্শের জন্য স্থানীয় কর্তৃপক্ষের সাথে যোগাযোগ করুন।"
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+  updateLanguage(savedLang);
+
+  // Set language toggle
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-lang') === savedLang) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Create prediction chart
+  const ctx = document.getElementById('predictionChart').getContext('2d');
+  const dates = Array.from({length:30}, (_,i) => `Day ${i+1}`);
+  const riskData = Array.from({length:30}, () => Math.floor(Math.random()*101));
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Outbreak Risk (%)',
+        data: riskData,
+        borderColor: '#d32f2f',
+        backgroundColor: 'rgba(211, 47, 47, 0.1)',
+        fill: false,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: function(value) {
+              if (value < 30) return 'Low';
+              if (value <= 70) return 'Medium';
+              return 'High';
+            }
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const risk = context.parsed.y > 70 ? 'High' : context.parsed.y > 30 ? 'Medium' : 'Low';
+              return `Risk: ${risk} (${context.parsed.y}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

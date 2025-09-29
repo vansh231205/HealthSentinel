@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSentinel — Easy Community Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7fbf8;
+  --nav-start:#2b7a78;
+  --nav-end:#023e8a;
+  --accent:#ffb703;
+  --card:#fff;
+  --muted:#3a3a3a;
+  --success:#2d6a4f;
+  --shadow:rgba(11,22,36,0.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--muted);line-height:1.35;scroll-behavior:smooth;}
+nav{position:sticky;top:0;z-index:1200;display:flex;align-items:center;gap:20px;padding:12px 18px;background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;flex-wrap:wrap;box-shadow:0 3px 12px rgba(2,30,68,0.12);}
+.nav-left{display:flex;gap:18px;align-items:center;}
+.nav-left a{color:#fff;text-decoration:none;font-weight:700;font-family:'Montserrat',sans-serif;font-size:15px;padding:6px 8px;border-radius:6px;}
+.nav-left a:hover{background: rgba(255,255,255,0.06);}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.settings-btn{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.settings-btn:active{transform:translateY(1px);}
+.lang-dropdown{position:relative;display:inline-block;}
+.lang-select{background: rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;min-width:120px;}
+.lang-select:hover{background: rgba(255,255,255,0.18);}
+.lang-options{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);min-width:180px;z-index:1300;margin-top:4px;}
+.lang-options.show{display:block;}
+.lang-option{display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--muted);cursor:pointer;border-bottom:1px solid #f0f0f0;}
+.lang-option:hover{background:#f8f9fa;}
+.lang-option:last-child{border-bottom:none;}
+.lang-flag{font-size:16px;}
+main{max-width:1200px;margin:18px auto;padding:12px;}
+.hero{background: linear-gradient(135deg,#e6fff6 0%, #f0f8ff 100%);border-radius:14px;padding:28px;display:flex;gap:18px;align-items:center;box-shadow: 0 10px 30px var(--shadow);margin-bottom:18px;}
+.hero .left{flex:1;}
+.brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);font-size:32px;margin:0 0 6px 0;}
+.subtitle{font-size:16px;color:var(--muted);margin:0 0 12px 0;}
+.hero p{margin:0;color:#2f4858;font-weight:600;font-size:14.5px;}
+.hero .actions{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.cta{background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;border:none;padding:12px 16px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(3,55,84,0.12);}
+.secondary{background:#fff;color:var(--nav-end);padding:10px 14px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);font-weight:700;}
+.alerts{background:linear-gradient(90deg,#fff8e1, #fffef6);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;gap:12px;align-items:center;box-shadow:0 8-px 24px rgba(0,0,0,0.04);}
+.alerts .badge{background:var(--accent);color:#13232b;font-weight:900;padding:10px 14px;border-radius:10px;font-size:18px;box-shadow:0 6px 14px rgba(255,183,3,0.12);}
+.alerts .text{font-weight:800;font-size:16px;color:#3a3a3a;}
+.section-title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--nav-end);margin:8px 0 18px 0;font-size:20px;}
+.features-grid{display:grid;grid-template-columns: repeat(3, 1fr);gap:16px;width:100;}
+.feature-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(8,30,45,0.06);border-top:8px solid transparent;display:flex;flex-direction:column;gap:10px;}
+.feature-emoji{font-size:36px;}
+.feature-title{font-weight:800;font-size:18px;color:var(--nav-end);margin:0;font-family:'Montserrat',sans-serif;}
+.feature-desc{color:#545b60;font-size:14px;margin:0;}
+.feature-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.feature-actions button{padding:10px 14px;border-radius:10px;border:none;font-weight:800;cursor:pointer;}
+.accent-blue{border-top-color:#410edb;}
+.accent-green{border-top-color:#0bd976;}
+.accent-orange{border-top-color:#ff9800;}
+.accent-purple{border-top-color:#ae3cff;}
+.accent-red{border-top-color:#d32f2f;}
+.accent-gray{border-top-color:#6c757d;}
+.custom-textbox{width:100%;padding:10px 14px;border-radius:12px;border:2px solid var(--nav-end);font-size:14px;resize:none;min-height:60px;transition:all 0.3s;}
+.custom-textbox:focus{outline:none;border-color:var(--accent);box-shadow:0 4px 12px rgba(255,183,3,0.2);}
+/* Voice AI Assistant */
+.voice-assistant{position:fixed;bottom:20px;right:20px;z-index:1400;}
+.voice-btn{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--nav-start),var(--nav-end));color:#fff;border:none;font-size:32px;cursor:pointer;box-shadow:0 8px 24px rgba(43,122,120,0.3);transition:all 0.3s;}
+.voice-btn:hover{transform:scale(1.1);}
+.voice-btn.listening{background:var(--danger);animation:pulse 1s infinite;}
+.voice-chat{display:none;position:absolute;bottom:90px;right:0;width:320px;height:400px;background:#fff;border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,0.2);overflow:hidden;}
+.voice-chat.active{display:flex;flex-direction:column;}
+.chat-header{background:linear-gradient(90deg,var(--nav-start),var(--nav-end));color:#fff;padding:16px;font-weight:700;}
+.chat-messages{flex:1;padding:16px;overflow-y:auto;background:#f8f9fa;}
+.message{margin-bottom:12px;padding:8px 12px;border-radius:12px;max-width:80%;}
+.message.user{background:var(--nav-end);color:#fff;margin-left:auto;}
+.message.ai{background:#e9ecef;color:var(--muted);}
+.chat-input{display:flex;padding:12px;border-top:1px solid #dee2e6;}
+.chat-input input{flex:1;padding:8px 12px;border:1px solid #dee2e6;border-radius:20px;outline:none;}
+.chat-input button{margin-left:8px;padding:8px 16px;background:var(--nav-end);color:#fff;border:none;border-radius:20px;cursor:pointer;}
+#waterSensorBox{display:flex;flex-direction:column;gap:4px;font-weight:700;margin-top:8px;}
+#waterSensorBox span{display:flex;gap:6px;}
+@media (max-width:1000px){.features-grid{grid-template-columns:repeat(2,1fr);}.brand{font-size:28px;}}
+@media (max-width:680px){nav{padding:10px 12px;gap:10px}.nav-left a{font-size:14px;padding:6px 6px}.tools{width:100%;justify-content:flex-end;margin-top:8px}.hero{flex-direction:column;align-items:flex-start}.features-grid{display:flex;flex-direction:column;gap:12px}.feature-card{padding:14px}.feature-emoji{font-size:32px}}
+
+/* New styles for the dashboard */
+.dashboard-container {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(8, 30, 45, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.alert-card {
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alert-card.red {
+    background: #ffebee;
+    border-left: 5px solid #d32f2f;
+}
+
+.alert-card.yellow {
+    background: #fffde7;
+    border-left: 5px solid #f9a825;
+}
+
+.alert-card.blue {
+    background: #e3f2fd;
+    border-left: 5px solid #1565c0;
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: #1c1c1c;
+}
+
+.alert-desc {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #555;
+}
+
+.alert-time {
+    font-size: 12px;
+    color: #777;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+}
+
+.alert-close:hover {
+    color: #666;
+}
+
+.green-btn {
+    background: var(--success);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.green-btn:hover {
+    background: #368c5c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="#intro">Home</a>
+    <a href="symptom-report_whatsup.html">Report Symptoms</a>
+    <a href="#alerts">Alerts</a>
+    <a href="#features">Features</a>
+  </div>
+  <div class="tools">
+    <div class="lang-dropdown">
+      <button class="lang-select" id="langSelect">
+        <span class="lang-flag">🇮🇳</span>
+        <span id="selectedLang">English</span>
+        <span>▼</span>
+      </button>
+      <div class="lang-options" id="langOptions">
+        <div class="lang-option" data-lang="en-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>English (India)</span>
+        </div>
+        <div class="lang-option" data-lang="hi-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>हिंदी (Hindi)</span>
+        </div>
+        <div class="lang-option" data-lang="ta-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>தமிழ் (Tamil)</span>
+        </div>
+        <div class="lang-option" data-lang="as-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>অসমীয়া (Assamese)</span>
+        </div>
+        <div class="lang-option" data-lang="bn-IN">
+          <span class="lang-flag">🇮🇳</span>
+          <span>বাংলা (Bengali)</span>
+        </div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsBtn">⚙️ Settings</button>
+  </div>
+</nav>
+
+<main>
+  <section id="intro" class="hero">
+    <div class="left">
+      <h1 class="brand" data-text="brand">HealthSentinel</h1>
+      <p class="subtitle" data-text="subtitle">Project SIH25001 — RKGIT Team</p>
+      <p data-text="hero_desc">Early warning & simple reporting for water-borne diseases.</p>
+      <div class="actions">
+        <button class="cta" onclick="navigateTo('symptom-report_whatsup.html')" data-text="btn_report">Report Symptoms</button>
+        <button class="secondary" onclick="alert('Call local health centre for help')" data-text="btn_help">Get Help</button>
+        <button class="secondary" onclick="makeEmergencyCall()" data-text="btn_emergency">Emergency Helpline</button>
+      </div>
+    </div>
+    <div style="width:220px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">🛡️</div>
+      <div style="font-weight:700;color:var(--success)" data-text="trust">Trusted • Local • Simple</div>
+    </div>
+  </section>
+
+  <section id="alerts">
+    <h2 class="section-title" data-text="dashboard_title">Community Health Dashboard (3)</h2>
+    <div class="dashboard-container">
+        <div class="alert-card red">
+            <div class="alert-header">
+                <div class="alert-title" data-text="alert1_title">Water Quality Alert</div>
+                <button class="alert-close">×</button>
+            </div>
+            <p class="alert-desc" data-text="alert1_desc">High E. Coli levels detected in Village A water source. Boil water advisory issued immediately.</p>
+            <div class="alert-time" data-text="alert1_time">2 minutes ago</div>
+        </div>
+        <div class="alert-card yellow">
+            <div class="alert-header">
+                <div class="alert-title" data-text="alert2_title">Health Pattern Detected</div>
+                <button class="alert-close">×</button>
+            </div>
+            <p class="alert-desc" data-text="alert2_desc">Increased diarrhea cases reported in Zone B. Health team dispatched for investigation.</p>
+            <div class="alert-time" data-text="alert2_time">15 minutes ago</div>
+        </div>
+        <div class="alert-card blue">
+            <div class="alert-header">
+                <div class="alert-title" data-text="alert3_title">System Update</div>
+                <button class="alert-close">×</button>
+            </div>
+            <p class="alert-desc" data-text="alert3_desc">New IoT sensors installed in 3 additional water sources. Monitoring coverage improved.</p>
+            <div class="alert-time" data-text="alert3_time">1 hour ago</div>
+        </div>
+
+      <article class="feature-card accent-blue" data-page="water-quality-monitoring">
+        <div class="feature-emoji">🌊</div>
+        <h3 class="feature-title" data-text="f4_title">Water Quality Monitoring</h3>
+        <p class="feature-desc" data-text="f4_desc">Live water sensor data.</p>
+        <div id="waterSensorBox">
+          <span><span data-text="water_ph">pH: </span><span id="sensorPH">7</span></span>
+          <span><span data-text="water_tds">TDS: </span><span id="sensorTDS">200 ppm</span></span>
+          <span><span data-text="water_contaminants">Contaminants: </span><span id="sensorContaminants">Low</span></span>
+          <span><span data-text="water_status">Status: </span><span id="drinkableStatus">Drinkable ✅</span></span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2 class="section-title" data-text="features_title">Key Features</h2>
+    <div class="features-grid">
+
+      <!-- Primary Feature: Symptom Reporting -->
+      <article class="feature-card accent-purple" data-page="symptom-report_whatsup" style="cursor:pointer;">
+        <div class="feature-emoji">🗣️</div>
+        <h3 class="feature-title" data-text="f1_title">Tell your symptoms</h3>
+        <p class="feature-desc" style="margin-top:10px;" data-text="f2_desc">Quick entry (or use detailed form above):</p>
+        <textarea id="symptomInput" class="custom-textbox" data-text-placeholder="symptom_placeholder"></textarea>
+        <div class="feature-actions" style="margin-top:8px;">
+            <button class="green-btn" onclick="event.stopPropagation(); navigateTo('symptom-report_whatsup.html')" data-text="f1_btn_detailed">📋 Detailed Symptom Report</button>
+            <button id="mike-btn" class="green-btn" onclick="event.stopPropagation(); startVoiceRecognition()" data-text="f1_btn_mike">🎤</button>
+        </div>
+      </article>
+
+      <!-- AI Disease Classification -->
+      <article class="feature-card accent-blue" data-page="ai-diagnosis" style="cursor:pointer;">
+        <div class="feature-emoji">🤖</div>
+        <h3 class="feature-title" data-text="f5_title">AI Disease Classification</h3>
+        <p class="feature-desc" data-text="f5_desc">Get instant AI-powered diagnosis based on your symptoms.</p>
+        <div class="feature-actions" style="margin-top:auto;">
+          <button class="green-btn" onclick="event.stopPropagation(); getAIDiagnosis()" data-text="f5_btn">Get AI Diagnosis</button>
+          <button class="green-btn" onclick="event.stopPropagation(); navigateTo('ai-diagnosis.html')" style="margin-left:8px;">📋 Detailed Analysis</button>
+        </div>
+      </article>
+
+      <!-- Telemedicine Access -->
+      <article class="feature-card accent-green" data-page="telemedicine" style="cursor:pointer;">
+        <div class="feature-emoji">👨‍⚕️</div>
+        <h3 class="feature-title" data-text="f11_title">Telemedicine Access</h3>
+        <p class="feature-desc" data-text="f11_desc">Connect with doctors for virtual consultations.</p>
+        <div class="feature-actions" style="margin-top:auto;">
+          <button class="green-btn" onclick="event.stopPropagation(); navigateTo('telemedicine.html')" data-text="f11_btn">Connect with Doctor</button>
+          <button class="green-btn" onclick="event.stopPropagation(); navigateTo('symptom-report_whatsup.html')" style="margin-left:8px;">🤖 AI Chat</button>
+        </div>
+      </article>
+
+      <!-- Health Education Games -->
+      <article class="feature-card accent-orange" data-page="gamified-education">
+        <div class="feature-emoji">🎮</div>
+        <h3 class="feature-title" data-text="f10_title">Health Education Games</h3>
+        <p class="feature-desc" data-text="f10_desc">Learn about hygiene and prevention through fun games!</p>
+        <div class="feature-actions">
+          <button class="green-btn" data-text="f10_btn">Play Games</button>
+        </div>
+      </article>
+
+      <!-- Emergency Alerts -->
+      <article class="feature-card accent-red" data-page="emergency-alerts">
+        <div class="feature-emoji">🚨</div>
+        <h3 class="feature-title" data-text="f6_title">Emergency Alerts</h3>
+        <p class="feature-desc" data-text="f6_desc">Get instant alerts for health emergencies in your area.</p>
+        <div class="feature-actions">
+          <button class="green-btn" onclick="makeEmergencyCall()" data-text="f6_btn">Emergency Help</button>
+        </div>
+      </article>
+
+      <!-- Community Access (Secondary Features) -->
+      <article class="feature-card accent-gray" data-page="community-hub">
+        <div class="feature-emoji">🏘️</div>
+        <h3 class="feature-title" data-text="community_title">Community Hub</h3>
+        <p class="feature-desc" data-text="community_desc">Access community reports, dashboard, and outbreak predictions.</p>
+        <div class="feature-actions">
+          <button class="green-btn" data-text="community_btn">Access Community Features</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<!-- Voice AI Assistant -->
+<div class="voice-assistant">
+  <button class="voice-btn" id="voiceAssistantBtn" title="AI Voice Assistant">🤖</button>
+  <div class="voice-chat" id="voiceChat">
+    <div class="chat-header">
+      <span>🤖 AI Health Assistant</span>
+      <button style="float:right;background:none;border:none;color:#fff;cursor:pointer;" onclick="toggleVoiceChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message ai">Hello! I'm your AI health assistant. You can ask me about symptoms, water quality, or say "call doctor" for medical help.</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Type or speak your message...">
+      <button onclick="sendChatMessage()">Send</button>
+      <button id="voiceChatBtn" onclick="startVoiceChat()">🎤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enhanced language system
+  function updateLanguage(lang) {
+    document.querySelectorAll('[data-text]').forEach(element => {
+      const textKey = element.getAttribute('data-text');
+      if (texts[lang] && texts[lang][textKey]) {
+        element.textContent = texts[lang][textKey];
+      }
+    });
+    const symptomInput = document.getElementById('symptomInput');
+    if (symptomInput) {
+      symptomInput.placeholder = texts[lang]['symptom_placeholder'];
+    }
+    updateWaterSensor();
+    
+    // Update selected language display
+    const langNames = {
+      'en-IN': 'English',
+      'hi-IN': 'हिंदी',
+      'ta-IN': 'தமிழ்',
+      'as-IN': 'অসমীয়া',
+      'bn-IN': 'বাংলা'
+    };
+    document.getElementById('selectedLang').textContent = langNames[lang];
+    
+    // Save to localStorage
+    localStorage.setItem('selectedLang', lang);
+  }
+
+  // Language texts
+  const texts = {
+    "en-IN": {
+      brand: "HealthSentinel",
+      subtitle: "Project SIH25001 — RKGIT Team",
+      hero_desc: "Early warning & simple reporting for water-borne diseases.",
+      btn_report: "Report Symptoms",
+      btn_help: "Get Help",
+      btn_emergency: "Emergency Helpline",
+      trust: "Trusted • Local • Simple",
+      features_title: "Key Features",
+      f1_title: "Tell your symptoms",
+      f1_desc: "Speak your symptoms for quick recording and real-time alerting.",
+      f1_btn_voice: "Start Voice Report",
+      f1_btn_mike: "🎤",
+      f1_btn_detailed: "📋 Detailed Symptom Report",
+      f2_desc: "Tell us your symptoms and know your possible disease.",
+      f2_btn: "Submit",
+      f3_title: "Crowdsourced Community Reporting",
+      f3_desc: "Join others in reporting symptoms and outbreaks to empower community safety.",
+      f3_btn: "Report to Community",
+      f4_title: "Water Quality Monitoring",
+      f4_desc: "Live water sensor data.",
+      f5_title: "AI Disease Classification",
+      f5_desc: "Get instant AI-powered diagnosis based on your symptoms.",
+      f5_btn: "Get AI Diagnosis",
+      f6_title: "Emergency Alerts",
+      f6_desc: "Get instant alerts for health emergencies in your area.",
+      f6_btn: "Emergency Help",
+      f10_title: "Health Education Games",
+      f10_desc: "Learn about hygiene and prevention through fun games!",
+      f10_btn: "Play Games",
+      f11_title: "Telemedicine Access",      f11_desc: "Connect with doctors for virtual consultations.",
+      f11_btn: "Connect with Doctor",
+      community_title: "Community Hub",
+      community_desc: "Access community reports, dashboard, and outbreak predictions.",
+      community_btn: "Access Community Features",
+      dashboard_title: "Community Health Dashboard (3)",
+      alert1_title: "Water Quality Alert",
+      alert1_desc: "High E. Coli levels detected in Village A water source. Boil water advisory issued immediately.",
+      alert1_time: "2 minutes ago",
+      alert2_title: "Health Pattern Detected",
+      alert2_desc: "Increased diarrhea cases reported in Zone B. Health team dispatched for investigation.",
+      alert2_time: "15 minutes ago",
+      alert3_title: "System Update",
+      alert3_desc: "New IoT sensors installed in 3 additional water sources. Monitoring coverage improved.",
+      alert3_time: "1 hour ago",
+      water_ph: "pH: ",
+      water_tds: "TDS: ",
+      water_contaminants: "Contaminants: ",
+      water_status: "Status: ",
+      water_level_high: "High",
+      water_level_medium: "Medium",
+      water_level_low: "Low",
+      water_status_drinkable: "Drinkable ✅",
+      water_status_not_drinkable: "Not Drinkable ❌",
+      symptom_placeholder: "Enter your symptoms..."
+    },
+    "hi-IN": {
+      brand: "हेल्थसेंटिनल",
+      subtitle: "परियोजना SIH25001 — RKGIT टीम",
+      hero_desc: "जलजनित बीमारियों के लिए प्रारंभिक चेतावनी और सरल रिपोर्टिंग।",
+      btn_report: "लक्षण रिपोर्ट करें",
+      btn_help: "मदद प्राप्त करें",
+      btn_emergency: "आपातकालीन हेल्पलाइन",
+      trust: "विश्वसनीय • स्थानीय • सरल",
+      features_title: "मुख्य विशेषताएं",
+      f1_title: "अपने लक्षण रिपोर्ट करें",
+      f1_desc: "अपने लक्षण बोलकर तुरंत रिकॉर्ड और अलर्ट भेजें।",
+      f1_btn_voice: "वॉइस रिपोर्ट शुरू करें",
+      f1_btn_mike: "🎤",
+      f1_btn_detailed: "📋 विस्तृत लक्षण रिपोर्ट",
+      f2_desc: "यहाँ अपने लक्षण टाइप करें:",
+      f2_btn: "सबमिट करें",
+      f3_title: "सामुदायिक रिपोर्टिंग",
+      f3_desc: "अन्य लोगों के साथ मिलकर लक्षण और प्रकोप रिपोर्ट करें।",
+      f3_btn: "सामुदायिक रिपोर्ट भेजें",
+      f4_title: "जल गुणवत्ता निगरानी",
+      f4_desc: "लाइव पानी सेंसर डेटा।",
+      f5_title: "एआई रोग वर्गीकरण",
+      f5_desc: "एआई का उपयोग करके रोगों का स्वतः वर्गीकरण।",
+      f5_btn: "एआई स्कैन",
+      f6_title: "जोखिम मूल्यांकन और अलर्ट सिस्टम",
+      f6_desc: "उच्च-जोखिम क्षेत्रों और व्यक्तिगत जोखिम स्तर के लिए अलर्ट प्राप्त करें।",
+      f6_btn: "जोखिम जांचें",
+      f7_title: "सामुदायिक स्वास्थ्य डैशबोर्ड",
+      f7_desc: "सामुदायिक स्वास्थ्य डेटा, रिपोर्ट और प्रकोप स्थिति देखें।",
+      f7_btn: "डैशबोर्ड देखें",
+      f8_title: "प्रारंभिक प्रकोप पूर्वानुमान",
+      f8_desc: "उभरते रोग हॉटस्पॉट और रुझानों की एआई पूर्वानुमान।",
+      f8_btn: "प्रकोप अनुमानित करें",
+      f9_title: "ब्लॉकचेन-आधारित स्वास्थ्य रिकॉर्ड",
+      f9_desc: "आपके स्वास्थ्य रिकॉर्ड ब्लॉकचेन पर सुरक्षित रूप से प्रबंधित होते हैं।",
+      f9_btn: "स्वास्थ्य रिकॉर्ड एक्सेस करें",
+      f10_title: "गेमिफाइड स्वास्थ्य शिक्षा",
+      f10_desc: "सुरक्षित स्वच्छता के बारे में सीखने और पुरस्कार जीतने के लिए खेलें!",
+      f10_btn: "अभी खेलें!",
+      f11_title: "टेलीमेडिसिन एक्सेस",
+      f11_desc: "जोखिम वाले उपयोगकर्ताओं के लिए आभासी परामर्श।",
+      f11_btn: "डॉक्टर से जुड़ें",
+      dashboard_title: "सामुदायिक स्वास्थ्य डैशबोर्ड (3)",
+      alert1_title: "जल गुणवत्ता चेतावनी",
+      alert1_desc: "ग्राम ए जल स्रोत में उच्च ई. कोलाई का स्तर पाया गया। उबला हुआ पानी पीने की सलाह तत्काल जारी की गई।",
+      alert1_time: "2 मिनट पहले",
+      alert2_title: "स्वास्थ्य पैटर्न का पता चला",
+      alert2_desc: "ज़ोन बी में डायरिया के मामलों में वृद्धि की सूचना मिली। जांच के लिए स्वास्थ्य टीम भेजी गई।",
+      alert2_time: "15 मिनट पहले",
+      alert3_title: "सिस्टम अपडेट",
+      alert3_desc: "3 अतिरिक्त जल स्रोतों में नए IoT सेंसर लगाए गए। निगरानी कवरेज में सुधार हुआ।",
+      alert3_time: "1 घंटा पहले",
+      water_ph: "पीएच: ",
+      water_tds: "टीडीएस: ",
+      water_contaminants: "दूषित पदार्थ: ",
+      water_status: "स्थिति: ",
+      water_level_high: "उच्च",
+      water_level_medium: "मध्यम",
+      water_level_low: "कम",
+      water_status_drinkable: "पीने योग्य ✅",
+      water_status_not_drinkable: "पीने योग्य नहीं ❌",
+      symptom_placeholder: "अपने लक्षण दर्ज करें..."
+    },
+    "ta-IN": {
+      brand: "ஹெல்த்சென்டினல்",
+      subtitle: "திட்டம் SIH25001 — RKGIT குழு",
+      hero_desc: "நீரால் பரவக்கூடிய நோய்களுக்கு முன் எச்சரிக்கை மற்றும் எளிய அறிவிப்பு.",
+      btn_report: "அறிகுறிகள் அறிவிக்க",
+      btn_help: "உதவி பெற",
+      btn_emergency: "அவசர உதவி எண்",
+      trust: "நம்பகமானது • உள்ளூர் • எளிமை",
+      features_title: "முக்கிய அம்சங்கள்",
+      f1_title: "உங்கள் அறிகுறிகளை அறிவிக்க",
+      f1_desc: "உங்கள் அறிகுறிகளை பேசுங்கள், உடனடியாக பதிவு செய்யவும் எச்சரிக்கை அனுப்பவும்.",
+      f1_btn_voice: "குரல் அறிக்கையை தொடங்கு",
+      f1_btn_mike: "🎤",
+      f1_btn_detailed: "📋 விஸ்தரித்த அறிகுறி அறிக்கை",
+      f2_desc: "உங்கள் அறிகுறிகளை இங்கு டைப் செய்யவும்:",
+      f2_btn: "சமர்ப்பிக்கவும்",
+      f3_title: "சமூக அறிவிப்பு",
+      f3_desc: "மற்றவர்களுடன் சேர்ந்து அறிகுறிகள் மற்றும் தொற்றுகளை அறிவிக்கவும்.",
+      f3_btn: "சமூகத்திற்கு அறிவிக்கவும்",
+      f4_title: "நீர் தரமான கண்காணிப்பு",
+      f4_desc: "நேரடி நீர் சென்சார் தரவு.",
+      f5_title: "ஏ.ஐ நோய் வகைப்பாடு",
+      f5_desc: "ஏ.ஐ மூலம் நோய்களை தானாக வகைப்படுத்தல்.",
+      f5_btn: "ஏ.ஐ ஸ்கேன்",
+      f6_title: "ஆபத்து மதிப்பீடு & எச்சரிக்கை",
+      f6_desc: "உயர் ஆபத்தான பகுதிகள் மற்றும் தனிப்பட்ட ஆபத்து நிலைகளுக்கான எச்சரிக்கை.",
+      f6_btn: "ஆபத்து சோதனை",
+      f7_title: "சமூக சுகாதார டாஷ்போர்டு",
+      f7_desc: "சமூக சுகாதார தரவு, அறிக்கைகள் மற்றும் தொற்று நிலைகளை காண்க.",
+      f7_btn: "டாஷ்போர்டு பார்க்க",
+      f8_title: "முன் தொற்று கணிப்பு",
+      f8_desc: "உதயமாவும் நோய் ஹாட்ஸ்பாட்கள் மற்றும் போக்குகளை ஏ.ஐ மூலம் கணிக்கிறது.",
+      f8_btn: "தொற்றுகளை கணிக்கவும்",
+      f9_title: "பிளாக்செயின் சுகாதார பதிவுகள்",
+      f9_desc: "உங்கள் சுகாதார பதிவுகள் பிளாக்செயினில் பாதுகாப்பாக நிர்வகிக்கப்படும்.",
+      f9_btn: "சுகாதார பதிவுகள் அணுகவும்",
+      f10_title: "விளையாட்டு அடிப்படையிலான சுகாதார கல்வி",
+      f10_desc: "பாதுகாப்பான சுகாதாரத்தைப் பற்றி விளையாடி அறிந்து, பரிசுகளை வெல்லுங்கள்!",
+      f10_btn: "இப்போது விளையாடு",
+      f11_title: "டெலிமெடிசின் அணுகல்",
+      f11_desc: "ஆபத்தான பயனர்களுக்கான மெய்நிகர் ஆலோசனைகள்.",
+      f11_btn: "மருத்துவருடன் இணைக்கவும்",
+      dashboard_title: "சமூக சுகாதார டாஷ்போர்டு (3)",
+      alert1_title: "நீர் தர எச்சரிக்கை",
+      alert1_desc: "கிராமம் A நீர் மூலத்தில் அதிக E. கோலை அளவுகள் கண்டறியப்பட்டன. உடனடியாக கொதித்த நீரை பயன்படுத்த ஆலோசனை வழங்கப்பட்டுள்ளது.",
+      alert1_time: "2 நிமிடங்கள் முன்பு",
+      alert2_title: "சுகாதார வடிவம் கண்டறியப்பட்டது",
+      alert2_desc: "மண்டலம் B இல் அதிகரித்த வயிற்றுப்போக்கு வழக்குகள் தெரிவிக்கப்பட்டுள்ளன. விசாரணைக்கு சுகாதார குழு அனுப்பப்பட்டுள்ளது.",
+      alert2_time: "15 நிமிடங்கள் முன்பு",
+      alert3_title: "அமைப்பு புதுப்பிப்பு",
+      alert3_desc: "3 கூடுதல் நீர் ஆதாரங்களில் புதிய IoT சென்சார்கள் நிறுவப்பட்டுள்ளன. கண்காணிப்பு பாதுகாப்பு மேம்படுத்தப்பட்டுள்ளது.",
+      alert3_time: "1 மணிநேரம் முன்பு",
+      water_ph: "pH: ",
+      water_tds: "TDS: ",
+      water_contaminants: "கலப்படங்கள்: ",
+      water_status: "நிலை: ",
+      water_level_high: "அதிகம்",
+      water_level_medium: "நடுத்தரம்",
+      water_level_low: "குறைவு",
+      water_status_drinkable: "குடிக்கக்கூடியது ✅",
+      water_status_not_drinkable: "குடிக்க முடியாதது ❌",
+      symptom_placeholder: "உங்கள் அறிகுறிகளை இங்கு டைப் செய்யவும்..."
+    },
+    "as-IN": {
+      brand: "হেলথছেণ্টিনেল",
+      subtitle: "প্রকল্প SIH25001 — RKGIT দল",
+      hero_desc: "পানীৰ পৰা হোৱা ৰোগৰ বাবে আগতীয়া সতৰ্কতা আৰু সহজ ৰিপ'ৰ্টিং।",
+      btn_report: "লক্ষণ ৰিপ'ৰ্ট কৰক",
+      btn_help: "সহায় লওক",
+      btn_emergency: "জৰুৰীকালীন হেল্পলাইন",
+      trust: "বিশ্বাসযোগ্য • স্থানীয় • সহজ",
+      features_title: "মুখ্য বৈশিষ্ট্যসমূহ",
+      f1_title: "আপোনাৰ লক্ষণসমূহ ৰিপ'ৰ্ট কৰক",
+      f1_desc: "তাৎক্ষণিক ৰেকৰ্ডিং আৰু ৰিয়েল-টাইম সতৰ্কতাৰ বাবে আপোনাৰ লক্ষণসমূহ কওক।",
+      f1_btn_voice: "ভইচ ৰিপ'ৰ্ট আৰম্ভ কৰক",
+      f1_btn_mike: "🎤",
+      f1_btn_detailed: "📋 বিস্তৃত লক্ষণ ৰিপ'ৰ্ট",
+      f2_desc: "ইয়াত আপোনাৰ লক্ষণসমূহ টাইপ কৰক:",
+      f2_btn: "দাখিল কৰক",
+      f3_title: "ক্ৰাউডছ'ৰ্চড কমিউনিটি ৰিপ'ৰ্টিং",
+      f3_desc: "সম্ভাব্য ৰোগ আৰু মহামাৰী ৰিপ'ৰ্ট কৰিবলৈ আনৰ সৈতে যোগ দিয়ক।",
+      f3_btn: "কমিউনিটিলৈ ৰিপ'ৰ্ট কৰক",
+      f4_title: "পানীৰ গুণগত মানৰ নিৰীক্ষণ",
+      f4_desc: "লাইভ পানী চেন্সৰ ডেটা।",
+      f5_title: "AI ৰোগ শ্ৰেণীবিভাজন",
+      f5_desc: "সময়ত চিনাক্তকৰণৰ বাবে AI ব্যৱহাৰ কৰি ৰোগৰ স্বয়ংক্ৰিয় শ্ৰেণীবিভাজন।",
+      f5_btn: "AI স্কেন",
+      f6_title: "ঝুঁকি মূল্যায়ন আৰু সতৰ্কতা প্ৰণালী",
+      f6_desc: "উচ্চ-ঝুঁকি অঞ্চল আৰু ব্যক্তিগত বিপদৰ স্তৰৰ বাবে সতৰ্কতা লাভ কৰক।",
+      f6_btn: "ঝুঁকি পৰীক্ষা কৰক",
+      f7_title: "কমিউনিটি হেলথ ডেশ্ব'ৰ্ড",
+      f7_desc: "কমিউনিটি স্বাস্থ্য ডেটা, ৰিপ'ৰ্ট আৰু মহামাৰীৰ স্থিতি চাওক।",
+      f7_btn: "ডেশ্ব'ৰ্ড চাওক",
+      f8_title: "আগতীয়া মহামাৰী ভৱিষ্যদ্বাণী",
+      f8_desc: "উভয় ৰোগৰ হটস্পট আৰু প্ৰৱণতাৰ AI চালিত ভৱিষ্যদ্বাণী।",
+      f8_btn: "মহামাৰী ভৱিষ্যদ্বাণী কৰক",
+      f9_title: "ব্লকচেইন-আধাৰিত স্বাস্থ্য ৰেকৰ্ড",
+      f9_desc: "আপোনাৰ স্বাস্থ্য ৰেকৰ্ডসমূহ ব্লকচেইনত নিৰাপদে ব্যৱস্থাপনা কৰা হয়।",
+      f9_btn: "স্বাস্থ্য ৰেকৰ্ডসমূহ প্ৰৱেশ কৰক",
+      f10_title: "গেমীফাইড স্বাস্থ্য শিক্ষা",
+      f10_desc: "নিৰাপদ স্বাস্থ্যবিধিৰ বিষয়ে শিকিবলৈ আৰু পুৰস্কাৰ জিকিবলৈ খেলত প্ৰতিযোগিতা কৰক!",
+      f10_btn: "এতিয়া খেলক!",
+      f11_title: "টেলিমেডিচিন সুবিধা",
+      f11_desc: "ঝুঁকিপূৰ্ণ ব্যৱহাৰকাৰীসকলৰ বাবে ভাৰ্চুৱেল পৰামৰ্শ।",
+      f11_btn: "এজন চিকিৎসকৰ সৈতে সংযোগ কৰক",
+      dashboard_title: "কমিউনিটি হেলথ ডেশ্ব'ৰ্ড (3)",
+      alert1_title: "পানীৰ গুণগত মানৰ সতৰ্কতা",
+      alert1_desc: "ভিলেজ A পানীৰ উৎসত উচ্চ ই. ক'লাইৰ স্তৰ পোৱা গৈছে। পানী উতলাই খোৱাৰ পৰামৰ্শ তৎক্ষণাত জাৰি কৰা হৈছে।",
+      alert1_time: "2 মিনিট আগতে",
+      alert2_title: "স্বাস্থ্যৰ ধৰণ চিনাক্ত হৈছে",
+      alert2_desc: "জ'ন B ত ডায়েৰিয়াৰ ঘটনা বৃদ্ধি হোৱাৰ খবৰ পোৱা গৈছে। তদন্তৰ বাবে স্বাস্থ্য দল প্ৰেৰণ কৰা হৈছে।",
+      alert2_time: "15 মিনিট আগতে",
+      alert3_title: "প্ৰণালী আপডে'ট",
+      alert3_desc: "3টা অতিৰিক্ত পানীৰ উৎসত নতুন IoT চেন্সৰ স্থাপন কৰা হৈছে। নিৰীক্ষণ কভাৰেজ উন্নত হৈছে।",
+      alert3_time: "1 ঘণ্টা আগতে",
+      water_ph: "pH: ",
+      water_tds: "TDS: ",
+      water_contaminants: "দূষিত পদাৰ্থ: ",
+      water_status: "স্থিতি: ",
+      water_level_high: "উচ্চ",
+      water_level_medium: "মধ্যম",
+      water_level_low: "কম",
+      water_status_drinkable: "খোৱাৰ যোগ্য ✅",
+      water_status_not_drinkable: "খোৱাৰ যোগ্য নহয় ❌",
+      symptom_placeholder: "আপোনাৰ লক্ষণসমূহ ইয়াত টাইপ কৰক..."
+    },
+    "bn-IN": {
+      brand: "হেলথসেনটিনেল",
+      subtitle: "প্রকল্প SIH25001 — RKGIT দল",
+      hero_desc: "জলবাহিত রোগের জন্য প্রাথমিক সতর্কতা এবং সহজ রিপোর্টিং।",
+      btn_report: "লক্ষণ রিপোর্ট করুন",
+      btn_help: "সাহায্য নিন",
+      btn_emergency: "জরুরী হেল্পলাইন",
+      trust: "বিশ্বস্ত • স্থানীয় • সহজ",
+      features_title: "মূল বৈশিষ্ট্যসমূহ",
+      f1_title: "আপনার লক্ষণগুলি রিপোর্ট করুন",
+      f1_desc: "দ্রুত রেকর্ডিং এবং রিয়েল-টাইম সতর্কতার জন্য আপনার লক্ষণগুলি বলুন।",
+      f1_btn_voice: "ভয়েস রিপোর্ট শুরু করুন",
+      f1_btn_mike: "🎤",
+      f1_btn_detailed: "📋 বিস্তারিত লক্ষণ রিপোর্ট",
+      f2_desc: "এখানে আপনার লক্ষণগুলি টাইপ করুন:",
+      f2_btn: "জমা দিন",
+      f3_title: "ক্রাউডসোর্সড কমিউনিটি রিপোর্টিং",
+      f3_desc: "সম্প্রদায়ের সুরক্ষাকে শক্তিশালী করতে অন্যান্যদের সাথে লক্ষণ এবং প্রাদুর্ভাব রিপোর্ট করুন।",
+      f3_btn: "কমিউনিটিতে রিপোর্ট করুন",
+      f4_title: "জল গুণমান নিরীক্ষণ",
+      f4_desc: "লাইভ জল সেন্সর ডেটা।",
+      f5_title: "এআই রোগ শ্রেণিবিন্যাস",
+      f5_desc: "দ্রুত সনাক্তকরণের জন্য এআই ব্যবহার করে রোগের স্বয়ংক্রিয় শ্রেণিবিন্যাস।",
+      f5_btn: "এআই স্ক্যান",
+      f6_title: "ঝুঁকি মূল্যায়ন এবং সতর্কতা ব্যবস্থা",
+      f6_desc: "উচ্চ-ঝুঁকিপূর্ণ অঞ্চল এবং ব্যক্তিগত ঝুঁকির স্তরের জন্য সতর্কতা পান।",
+      f6_btn: "ঝুঁকি পরীক্ষা করুন",
+      f7_title: "কমিউনিটি হেলথ ড্যাশবোর্ড",
+      f7_desc: "কমিউনিটি স্বাস্থ্য ডেটা, রিপোর্ট এবং প্রাদুর্ভাবের অবস্থা দেখুন।",
+      f7_btn: "ড্যাশবোর্ড দেখুন",
+      f8_title: "প্রাথমিক প্রাদুর্ভাব পূর্বাভাস",
+      f8_desc: "এআই-চালিত পূর্বাভাস যা রোগ হটস্পট এবং প্রবণতা উদীয়মান হয়।",
+      f8_btn: "প্রাদুর্ভাবের পূর্বাভাস দিন",
+      f9_title: "ব্লকচেইন-ভিত্তিক স্বাস্থ্য রেকর্ড",
+      f9_desc: "আপনার স্বাস্থ্য রেকর্ডগুলি ব্লকচেইনে নিরাপদে পরিচালিত হয়।",
+      f9_btn: "স্বাস্থ্য রেকর্ডে প্রবেশ করুন",
+      f10_title: "গ্যামিফাইড স্বাস্থ্য শিক্ষা",
+      f10_desc: "নিরাপদ স্বাস্থ্যবিধি সম্পর্কে শিখতে এবং পুরষ্কার জিততে গেমসে প্রতিযোগিতা করুন!",
+      f10_btn: "এখনই খেলুন!",
+      f11_title: "টেলিমেডিসিন অ্যাক্সেস",
+      f11_desc: "ঝুঁকিতে থাকা ব্যবহারকারীদের জন্য ভার্চুয়াল পরামর্শ।",
+      f11_btn: "একজন ডাক্তারের সাথে সংযোগ করুন",
+      dashboard_title: "কমিউনিটি হেলথ ড্যাশবোর্ড (3)",
+      alert1_title: "জল গুণমান সতর্কতা",
+      alert1_desc: "ভিলেজ A জল উৎস এ উচ্চ ই. কোলাই স্তর সনাক্ত করা হয়েছে। অবিলম্বে জল ফুটিয়ে ব্যবহারের পরামর্শ জারি করা হয়েছে।",
+      alert1_time: "2 মিনিট আগে",
+      alert2_title: "স্বাস্থ্য প্যাটার্ন সনাক্ত করা হয়েছে",
+      alert2_desc: "জোন B তে ডায়রিয়ার মামলার সংখ্যা বৃদ্ধি পেয়েছে। তদন্তের জন্য স্বাস্থ্য টিম পাঠানো হয়েছে।",
+      alert2_time: "15 মিনিট আগে",
+      alert3_title: "সিস্টেম আপডেট",
+      alert3_desc: "3টি অতিরিক্ত জল উৎস এ নতুন IoT সেন্সর ইনস্টল করা হয়েছে। নিরীক্ষণের কভারেজ উন্নত হয়েছে।",
+      alert3_time: "1 ঘন্টা আগে",
+      water_ph: "pH: ",
+      water_tds: "TDS: ",
+      water_contaminants: "দূষিত পদার্থ: ",
+      water_status: "স্থিতি: ",
+      water_level_high: "উচ্চ",
+      water_level_medium: "মাঝারি",
+      water_level_low: "কম",
+      water_status_drinkable: "পানীয় যোগ্য ✅",
+      water_status_not_drinkable: "পানীয় যোগ্য নয় ❌",
+      symptom_placeholder: "এখানে আপনার লক্ষণগুলি টাইপ করুন..."
+    }
+  };
+
+  // Water sensor simulation
+  function updateWaterSensor() {
+    const activeLang = localStorage.getItem('selectedLang') || 'en-IN';
+    const ph = (Math.random()*3+6).toFixed(1);
+    const tds = Math.floor(Math.random()*500+50);
+    let levelKey, statusKey;
+
+    if (tds > 400) {
+      levelKey = 'water_level_high';
+      statusKey = 'water_status_not_drinkable';
+    } else if (tds > 200) {
+      levelKey = 'water_level_medium';
+      statusKey = (ph >= 6.5 && ph <= 8.5) ? 'water_status_drinkable' : 'water_status_not_drinkable';
+    } else {
+      levelKey = 'water_level_low';
+      statusKey = (ph >= 6.5 && ph <= 8.5) ? 'water_status_drinkable' : 'water_status_not_drinkable';
+    }
+    
+    const phElement = document.getElementById('sensorPH');
+    const tdsElement = document.getElementById('sensorTDS');
+    const contaminSpan = document.getElementById('sensorContaminants');
+    const status = document.getElementById('drinkableStatus');
+    
+    if (phElement) phElement.textContent = ph;
+    if (tdsElement) tdsElement.textContent = tds + " ppm";
+    
+    if (contaminSpan && texts[activeLang] && texts[activeLang][levelKey]) {
+      contaminSpan.textContent = texts[activeLang][levelKey];
+      contaminSpan.style.color = (levelKey === 'water_level_high') ? "red" : (levelKey === 'water_level_medium') ? "orange" : "green";
+    }
+
+    if (status && texts[activeLang] && texts[activeLang][statusKey]) {
+      status.textContent = texts[activeLang][statusKey];
+      status.style.color = (statusKey === 'water_status_drinkable') ? "green" : "red";
+    }
+  }
+
+  // Voice AI Assistant functionality
+  let recognition;
+  let isListening = false;
+  
+  function toggleVoiceChat() {
+    const voiceChat = document.getElementById('voiceChat');
+    voiceChat.classList.toggle('active');
+  }
+  
+  function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    addChatMessage(message, 'user');
+    input.value = '';
+    
+    // Simulate AI response
+    setTimeout(() => {
+      processAICommand(message);
+    }, 1000);
+  }
+  
+  function addChatMessage(message, sender) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    messageDiv.textContent = message;
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+  
+  function processAICommand(message) {
+    const lowerMessage = message.toLowerCase();
+    let response = '';
+    let action = null;
+    
+    if (lowerMessage.includes('call doctor') || lowerMessage.includes('doctor')) {
+      response = "I'll help you connect with a doctor. Redirecting to telemedicine...";
+      action = 'telemedicine';
+    } else if (lowerMessage.includes('water quality')) {
+      response = "Let me check the latest water quality data for your area.";
+      action = 'water';
+    } else if (lowerMessage.includes('symptoms') || lowerMessage.includes('sick')) {
+      response = "I can help you report your symptoms. Opening symptom reporting...";
+      action = 'symptoms';
+    } else if (lowerMessage.includes('emergency')) {
+      response = "This is an emergency! Connecting you to emergency services immediately.";
+      action = 'emergency';
+    } else if (lowerMessage.includes('education') || lowerMessage.includes('learn')) {
+      response = "Great! I'll show you some health education modules.";
+      action = 'education';
+    } else {
+      response = "I can help you with: reporting symptoms, checking water quality, calling a doctor, health education, or emergency assistance. What would you like to do?";
+    }
+    
+    addChatMessage(response, 'ai');
+    
+    // Execute action
+    if (action) {
+      setTimeout(() => executeAction(action), 2000);
+    }
+  }
+  
+  function executeAction(action) {
+    switch(action) {
+      case 'telemedicine':
+        window.location.href = 'telemedicine.html';
+        break;
+      case 'symptoms':
+        window.location.href = 'symptom-report_whatsup.html';
+        break;
+      case 'water':
+        document.getElementById('features').scrollIntoView({behavior: 'smooth'});
+        break;
+      case 'emergency':
+        makeEmergencyCall();
+        break;
+      case 'education':
+        window.location.href = 'gamified-education.html';
+        break;
+    }
+  }
+  
+  function startVoiceChat() {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert('Voice recognition not supported in this browser. Please use Google Chrome.');
+      return;
+    }
+    
+    if (isListening) {
+      recognition.stop();
+      return;
+    }
+    
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = localStorage.getItem('selectedLang') || 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    const voiceChatBtn = document.getElementById('voiceChatBtn');
+    
+    recognition.onstart = function() {
+      isListening = true;
+      voiceChatBtn.style.background = 'var(--danger)';
+      voiceChatBtn.textContent = '🔴';
+      addChatMessage('Listening...', 'ai');
+    };
+    
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      document.getElementById('chatInput').value = transcript;
+      sendChatMessage();
+    };
+    
+    recognition.onerror = function(event) {
+      console.error('Speech recognition error:', event.error);
+      addChatMessage('Sorry, I couldn\'t understand. Please try again.', 'ai');
+    };
+    
+    recognition.onend = function() {
+      isListening = false;
+      voiceChatBtn.style.background = 'var(--nav-end)';
+      voiceChatBtn.textContent = '🎤';
+    };
+    
+    recognition.start();
+  }
+  
+  function makeEmergencyCall() {
+    const phone = prompt('Emergency detected! Call emergency helpline?\n\nPress OK to call: +91-102 (Emergency)\nOr enter health worker number:');
+    if (phone) {
+      window.location.href = `tel:${phone}`;
+    } else {
+      window.location.href = 'tel:102';
+    }
+  }
+  
+  function submitSymptoms() {
+    const symptomInput = document.getElementById('symptomInput');
+    if (!symptomInput) {
+      alert('Symptom input field not found!');
+      return;
+    }
+    
+    const symptoms = symptomInput.value.trim();
+    if (!symptoms) {
+      alert('Please enter your symptoms before submitting.');
+      return;
+    }
+    
+    // Simulate submission
+    alert(`Symptoms submitted successfully:
+
+"${symptoms}"
+
+A health worker will contact you soon. If this is an emergency, please call the emergency helpline immediately.`);
+    
+    // Clear the input
+    symptomInput.value = '';
+    
+    // Log for debugging
+    console.log('Symptoms submitted:', symptoms);
+  }
+  
+  function getAIDiagnosis() {
+    const symptomInput = document.getElementById('symptomInput');
+    if (!symptomInput || !symptomInput.value.trim()) {
+      alert('Please enter your symptoms first in the symptom box above, then click this button for AI diagnosis.');
+      return;
+    }
+    
+    const symptoms = symptomInput.value.trim().toLowerCase();
+    let diagnosis = '';
+    let riskLevel = 'Low';
+    let recommendations = [];
+    
+    // Simple AI simulation based on common water-borne disease symptoms
+    if (symptoms.includes('diarrhea') || symptoms.includes('loose stool')) {
+      if (symptoms.includes('fever') || symptoms.includes('vomit')) {
+        diagnosis = 'Possible Gastroenteritis or Food Poisoning';
+        riskLevel = 'Medium';
+        recommendations = ['Stay hydrated with ORS', 'Rest and avoid solid food', 'Consult doctor if symptoms persist'];
+      } else {
+        diagnosis = 'Mild Digestive Issues';
+        riskLevel = 'Low';
+        recommendations = ['Drink plenty of fluids', 'Eat bland foods', 'Monitor symptoms'];
+      }
+    } else if (symptoms.includes('fever') && symptoms.includes('headache')) {
+      diagnosis = 'Possible Viral Infection';
+      riskLevel = 'Medium';
+      recommendations = ['Rest and hydration', 'Monitor temperature', 'Seek medical attention if fever persists'];
+    } else if (symptoms.includes('stomach pain') || symptoms.includes('abdominal pain')) {
+      diagnosis = 'Digestive Discomfort';
+      riskLevel = 'Low';
+      recommendations = ['Avoid spicy foods', 'Drink warm water', 'Rest'];
+    } else {
+      diagnosis = 'General Health Consultation Recommended';
+      riskLevel = 'Low';
+      recommendations = ['Monitor symptoms', 'Stay hydrated', 'Consult healthcare provider if symptoms worsen'];
+    }
+    
+    // Display AI diagnosis
+    const diagnosisResult = '🤖 AI DIAGNOSIS RESULT\\n\\n' +
+      'Symptoms: "' + symptomInput.value + '"\\n\\n' +
+      'Possible Condition: ' + diagnosis + '\\n' +
+      'Risk Level: ' + riskLevel + '\\n\\n' +
+      'Recommendations:\\n' + recommendations.map(r => '• ' + r).join('\\n') + '\\n\\n' +
+      '⚠️ DISCLAIMER: This is an AI simulation for demonstration. Always consult with qualified healthcare professionals for accurate diagnosis and treatment.\\n\\n' +
+      'Want detailed analysis? Click "Detailed Analysis" button or visit Telemedicine for doctor consultation.';
+    
+    alert(diagnosisResult);
+    
+    // Log for debugging
+    console.log('AI Diagnosis:', diagnosis, riskLevel);
+  }
+  
+  function navigateTo(page) {
+    console.log('Navigating to:', page);
+    window.location.href = page;
+  }
+  
+  // Original voice recognition for symptom input
+  function startVoiceRecognition() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Sorry, your browser doesn't support the Web Speech API. Please use Google Chrome.");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = localStorage.getItem('selectedLang') || 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    const symptomInput = document.getElementById('symptomInput');
+    if (symptomInput) {
+      recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          symptomInput.value += transcript + '. ';
+      };
+
+      recognition.onerror = function(event) {
+          console.error('Speech recognition error:', event.error);
+          alert('An error occurred during voice recognition. Please try again.');
+      };
+
+      recognition.onend = function() {
+          console.log('Voice recognition service disconnected.');
+      };
+
+      recognition.start();
+      console.log('Voice recognition started. Please speak now.');
+    }
+  }
+
+  // Language toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('HealthSentinel: Page loaded, initializing...');
+    
+    // Debug: Check for missing elements
+    const requiredElements = [
+        'langSelect',
+        'langOptions', 
+        'voiceAssistantBtn',
+        'chatInput',
+        'mike-btn',
+        'symptomInput',
+        'settingsBtn'
+    ];
+    
+    requiredElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (!element) {
+            console.error(`Missing element: ${id}`);
+        } else {
+            console.log(`Found element: ${id}`);
+        }
+    });
+    
+    const savedLang = localStorage.getItem('selectedLang') || 'en-IN';
+    updateLanguage(savedLang);
+    
+    // Language dropdown functionality
+    const langSelect = document.getElementById('langSelect');
+    const langOptions = document.getElementById('langOptions');
+    
+    langSelect.addEventListener('click', function(e) {
+      e.stopPropagation();
+      langOptions.classList.toggle('show');
+    });
+    
+    document.addEventListener('click', function() {
+      langOptions.classList.remove('show');
+    });
+    
+    document.querySelectorAll('.lang-option').forEach(option => {
+      option.addEventListener('click', function() {
+        const selectedLang = this.dataset.lang;
+        updateLanguage(selectedLang);
+        langOptions.classList.remove('show');
+      });
+    });
+    
+    // Run sensor simulation every 3 seconds
+    setInterval(updateWaterSensor, 3000);
+    
+    // Voice assistant button
+    document.getElementById('voiceAssistantBtn').addEventListener('click', toggleVoiceChat);
+    
+    // Chat input enter key
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    });
+    
+    // Settings button functionality
+    document.getElementById('settingsBtn').addEventListener('click', function() {
+      alert('Settings panel would open here');
+    });
+    
+    // Attach click listener for the new microphone button
+    const mikeBtn = document.getElementById('mike-btn');
+    if (mikeBtn) {
+      mikeBtn.addEventListener('click', startVoiceRecognition);
+      console.log('Mike button listener attached');
+    } else {
+      console.warn('Mike button not found');
+    }
+    
+    // Make feature cards clickable
+    document.querySelectorAll('.feature-card[data-page]').forEach(card => {
+      card.addEventListener('click', function() {
+        const page = this.getAttribute('data-page');
+        console.log('Navigating to:', page + '.html');
+        window.location.href = page + '.html';
+      });
+    });
+    
+    // Add click handlers for feature card buttons
+    document.querySelectorAll('.feature-actions button').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent card click
+        const cardPage = this.closest('.feature-card')?.getAttribute('data-page');
+        if (cardPage) {
+          console.log('Button click navigating to:', cardPage + '.html');
+          window.location.href = cardPage + '.html';
+        }
+      });
+    });
+    
+    // Initialize water sensor immediately
+    updateWaterSensor();
+    console.log('HealthSentinel: Initialization complete');
+  });
+</script>
+
+</body>
+</html>

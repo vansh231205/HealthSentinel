@@ -58,7 +58,7 @@ main{max-width:1200px;margin:20px auto;padding:20px;}
 
 <nav>
   <div class="nav-left">
-    <a href="HealthSentinel.html" data-text="nav_back">← Back to Home</a>
+    <a href="index.html" data-text="nav_back">← Back to Home</a>
     <a href="#community" data-text="nav_community">Community</a>
     <a href="#analytics" data-text="nav_analytics">Analytics</a>
     <a href="#reports" data-text="nav_reports">Reports</a>
@@ -259,7 +259,7 @@ function reportIssue() {
       window.location.href = 'emergency-alerts.html';
       break;
     case '3':
-      window.location.href = 'HealthSentinel.html#features';
+      window.location.href = 'index.html#features';
       break;
     case '4':
       alert('Equipment malfunction reported. Technical team will be notified.\n\nReport ID: #' + Math.random().toString(36).substr(2, 9).toUpperCase());
@@ -278,10 +278,10 @@ function shareData() {
     navigator.share({
       title: 'HealthSentinel Community Data',
       text: 'Check out our community health monitoring system',
-      url: window.location.origin + '/HealthSentinel.html',
+      url: window.location.origin + '/index.html',
     });
   } else {
-    const shareText = `Check out HealthSentinel - Community Health Monitoring System\n${window.location.origin}/HealthSentinel.html`;
+    const shareText = `Check out HealthSentinel - Community Health Monitoring System\n${window.location.origin}/index.html`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
       alert('Community link copied to clipboard!');
